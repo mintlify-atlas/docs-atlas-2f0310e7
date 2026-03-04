@@ -1,0 +1,87 @@
+{
+  "projectType": "saas",
+  "projectName": "SquirrelDisk",
+  "projectDescription": "A beautiful, cross-platform disk usage analyzer built with Rust and React (Tauri)",
+  "theme": "almond",
+  "primaryColor": "#cb8547",
+  "lightColor": "#193443",
+  "darkColor": "#847454",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Installation",
+            "pages": [
+              "installation/windows",
+              "installation/macos",
+              "installation/linux"
+            ]
+          },
+          {
+            "group": "User Guide",
+            "pages": [
+              "guide/scanning-disks",
+              "guide/navigating-results",
+              "guide/deleting-files",
+              "guide/external-drives"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/sunburst-visualization",
+              "features/file-management",
+              "features/performance",
+              "features/auto-updater"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Community",
+        "groups": [
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/overview",
+              "contributing/development-setup",
+              "contributing/architecture"
+            ]
+          },
+          {
+            "group": "Help & Support",
+            "pages": [
+              "support/troubleshooting",
+              "support/faq",
+              "support/reporting-bugs"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Fast parallel disk scanning with Rust backend",
+    "Interactive D3.js sunburst chart visualization",
+    "Drag-and-drop file deletion interface",
+    "Cross-platform support (Windows, macOS, Linux)",
+    "Real-time external disk detection",
+    "File explorer integration",
+    "Auto-updater for seamless updates"
+  ],
+  "publicApiSurface": [
+    "get_disks - Retrieves list of mounted disks and volumes",
+    "start_scanning - Initiates disk usage scan with configurable depth ratio",
+    "stop_scanning - Terminates ongoing scan operation",
+    "show_in_folder - Opens file explorer at specified path"
+  ]
+}
