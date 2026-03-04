@@ -139,6 +139,31 @@ The React frontend is organized into several key components:
     
     **Location:** `src/components/FileLine.tsx`
   </Card>
+  
+  <Card title="DiskItem.tsx" icon="hard-drive">
+    **Purpose:** Individual disk/drive item in the main list
+    
+    **Key Features:**
+    - Displays disk name, mount point, and capacity
+    - Shows usage percentage with color-coded progress bar
+    - Click to start quick scan (min-ratio: 0.001)
+    - Right-click to start full scan (min-ratio: 0)
+    - Distinguishes removable drives with special icon
+    
+    **Location:** `src/components/DiskItem.tsx`
+  </Card>
+  
+  <Card title="ParentFolder.tsx" icon="folder-open">
+    **Purpose:** Breadcrumb navigation for current folder in detail view
+    
+    **Key Features:**
+    - Shows current folder path and size
+    - Click to navigate to parent folder
+    - Right-click to open in file explorer
+    - Synchronized with sunburst chart focus
+    
+    **Location:** `src/components/ParentFolder.tsx`
+  </Card>
 </CardGroup>
 
 ### d3chart.ts - Sunburst Visualization
