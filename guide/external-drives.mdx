@@ -1,0 +1,312 @@
+---
+title: Working with External Drives
+description: Learn how to scan, clean up, and safely manage external drives and removable media
+---
+
+SquirrelDisk provides seamless support for external drives, USB flash drives, and other removable storage devices. This guide covers everything you need to know about working with external media.
+
+## Automatic Detection
+
+SquirrelDisk continuously monitors your system for connected storage devices:
+
+### Real-Time Drive List
+
+The disk list automatically updates:
+
+- **Refresh interval**: Every 2 seconds
+- **Auto-detection**: New drives appear without restarting the app
+- **Auto-removal**: Disconnected drives disappear from the list
+- **Visual distinction**: External drives display with a special removable drive icon
+
+<Note>
+  You don't need to manually refresh the disk list. SquirrelDisk polls your system automatically and updates the interface when changes are detected.
+</Note>
+
+### Identifying External Drives
+
+External drives are easy to spot:
+
+- **Icon**: Removable drive icon (different from internal disk icon)
+- **Label**: Drive name and mount point
+- **Capacity**: Total space and available space
+- **Usage bar**: Color-coded based on how full the drive is
+
+```
+Green: 0-60% full
+Yellow: 60-70% full
+Red: 70-100% full
+```
+
+## Scanning Removable Drives
+
+Scanning external drives works exactly like scanning internal disks:
+
+### Quick Scan (Default)
+
+<Steps>
+  <Step title="Connect your drive">
+    Plug in your external drive and wait for it to appear in the disk list.
+  </Step>
+  
+  <Step title="Left-click to scan">
+    Click on the drive to start a quick scan (min-ratio: 0.001).
+  </Step>
+  
+  <Step title="Wait for completion">
+    The scan progress displays while analyzing the drive.
+  </Step>
+</Steps>
+
+### Full Scan
+
+<Steps>
+  <Step title="Right-click the drive">
+    Right-click on the external drive in the disk list.
+  </Step>
+  
+  <Step title="Full scan begins">
+    A comprehensive scan starts (min-ratio: 0) that analyzes every file.
+  </Step>
+</Steps>
+
+<Tip>
+  External drives are typically smaller than internal disks, so even full scans usually complete quickly.
+</Tip>
+
+## Performance Considerations
+
+### Scan Speed Factors
+
+External drive scan performance depends on:
+
+1. **Connection type**:
+   - USB 3.0/3.1: Fast
+   - USB 2.0: Moderate
+   - USB 1.0: Slow
+
+2. **Drive type**:
+   - SSD: Very fast
+   - HDD: Moderate
+   - Flash drive: Variable
+
+3. **File system**:
+   - exFAT: Good performance
+   - NTFS: Good on Windows, slower on macOS/Linux
+   - FAT32: Moderate
+   - HFS+/APFS: Good on macOS
+
+### Optimization Tips
+
+<Steps>
+  <Step title="Use quick scan first">
+    Start with a quick scan to get an overview, only use full scan if needed.
+  </Step>
+  
+  <Step title="Close other programs">
+    Close applications that might be accessing the drive (backup software, antivirus, etc.).
+  </Step>
+  
+  <Step title="Use USB 3.0 ports">
+    Connect to the fastest available USB port on your computer.
+  </Step>
+</Steps>
+
+<Warning>
+  Scanning while other programs are actively reading/writing the drive can slow down the scan and may give inaccurate results.
+</Warning>
+
+## Cleaning Up External Drives
+
+External drives are ideal candidates for cleanup:
+
+### Common Cleanup Targets
+
+1. **Old backups**: Outdated backup archives taking up space
+2. **Duplicate files**: Multiple copies of photos, videos, or documents
+3. **Temporary files**: Cache files, temp folders from various programs
+4. **Large media files**: Old videos or high-resolution images you no longer need
+
+### Cleanup Workflow
+
+<Steps>
+  <Step title="Scan the drive">
+    Complete a scan of your external drive.
+  </Step>
+  
+  <Step title="Navigate to large folders">
+    Use the sunburst chart to identify the largest folders.
+  </Step>
+  
+  <Step title="Review contents">
+    Drill down into folders and review files in the sidebar.
+  </Step>
+  
+  <Step title="Select items to delete">
+    Drag unwanted files and folders to the deletion area.
+  </Step>
+  
+  <Step title="Verify selection">
+    Right-click items to verify their contents before deleting.
+  </Step>
+  
+  <Step title="Execute deletion">
+    Click the Delete button to permanently remove items.
+  </Step>
+</Steps>
+
+<Note>
+  The real-time chart updates after deletion let you see exactly how much space you've freed on your external drive.
+</Note>
+
+## Safely Ejecting Drives
+
+After cleaning up an external drive, you should safely eject it:
+
+### Before Ejecting
+
+<Steps>
+  <Step title="Complete all deletions">
+    Ensure any pending deletions have finished.
+  </Step>
+  
+  <Step title="Return to disk list">
+    Navigate back to the main disk list screen.
+  </Step>
+  
+  <Step title="Close any open file managers">
+    If you right-clicked items to view them, close those file manager windows.
+  </Step>
+</Steps>
+
+### Ejection Methods
+
+SquirrelDisk doesn't include a built-in eject function. Use your operating system's eject mechanism:
+
+#### Windows
+1. Click the "Safely Remove Hardware" icon in the system tray
+2. Select your drive from the list
+3. Wait for the "Safe to Remove Hardware" message
+
+#### macOS
+1. Open Finder
+2. Click the eject icon next to the drive name in the sidebar
+3. Wait for the drive to disappear from the desktop
+
+#### Linux
+1. Open your file manager
+2. Click the eject icon next to the drive
+3. Or use command line: `umount /path/to/drive`
+
+<Warning>
+  Always safely eject external drives before unplugging them. Removing a drive while SquirrelDisk (or any program) is scanning it can cause data corruption.
+</Warning>
+
+## Common Use Cases
+
+### Cleaning a Full Backup Drive
+
+1. Scan the external backup drive
+2. Navigate to the backup folder
+3. Identify old backup sets
+4. Delete outdated backups to free space
+5. Verify new backups can now be created
+
+### Organizing a Photo Drive
+
+1. Scan your external photo storage
+2. Find folders with the most images
+3. Review and delete duplicates or blurry shots
+4. Identify the largest video files
+5. Remove videos you don't need
+
+### Preparing a Drive for Reuse
+
+1. Scan the drive to see what's on it
+2. Review the sunburst chart for an overview
+3. Select all top-level folders for deletion
+4. Execute deletion to clean the drive
+5. Verify the drive is mostly empty
+
+<Tip>
+  For complete drive wiping, use your operating system's format utility after using SquirrelDisk to remove specific files.
+</Tip>
+
+## Platform-Specific Behavior
+
+### Windows
+- External drives appear with drive letters (E:, F:, etc.)
+- Removable flash drives are automatically detected
+- Network drives may appear if mounted
+
+### macOS
+- External drives appear at `/Volumes/DriveName`
+- Both USB drives and mounted disk images appear in the list
+- The `/Volumes` path itself is excluded from root scans
+- Time Machine drives are shown but may require admin permissions to scan
+
+### Linux
+- External drives typically mount at `/media/username/DriveName`
+- The `/media` path is excluded from root scans
+- You can still scan individual drives by selecting them from the list
+- Some drives may require root permissions to fully scan
+
+## Troubleshooting
+
+### Drive Not Appearing
+
+If your external drive doesn't appear in SquirrelDisk:
+
+1. **Check connection**: Ensure the drive is properly connected
+2. **Verify mounting**: Open your file manager to see if the OS recognizes it
+3. **Wait for detection**: The auto-detection runs every 2 seconds; wait a moment
+4. **Check filtering**: Some drives are filtered out (boot partitions, system volumes)
+5. **Try a different port**: Some USB ports may not work correctly
+
+### Scan Taking Too Long
+
+If scanning seems to hang:
+
+1. **Check the connection**: USB 2.0 or older is significantly slower
+2. **Close other programs**: Stop any other software accessing the drive
+3. **Try quick scan**: Right-click was used for full scan; try left-click for quick scan
+4. **Check drive health**: The drive may have hardware issues causing slow reads
+
+### Cannot Delete Files
+
+If deletion fails on external drives:
+
+1. **Check permissions**: Ensure the drive isn't read-only
+2. **Verify file system**: Some file systems require specific permissions
+3. **Close other programs**: Files open in other programs cannot be deleted
+4. **Check write protection**: Some USB drives have physical write-protect switches
+
+<Note>
+  macOS users may need to grant SquirrelDisk "Full Disk Access" in System Preferences > Security & Privacy > Privacy for external drive access.
+</Note>
+
+## Best Practices
+
+### Regular Maintenance
+
+1. Scan external drives monthly
+2. Delete accumulated temporary files
+3. Review and remove outdated backups
+4. Keep at least 10% free space on backup drives
+
+### Before Important Backups
+
+1. Scan the backup drive
+2. Clear old backups to make room
+3. Verify sufficient free space
+4. Safely eject and reconnect before backing up
+
+### When Sharing Drives
+
+1. Scan before giving drives to others
+2. Delete any personal or sensitive files
+3. Review the sunburst chart to ensure nothing is missed
+4. Check hidden files by scanning from the root
+
+<Tip>
+  Keep your external drives organized by regularly scanning and cleaning them with SquirrelDisk. This prevents the "I don't know what's on this drive" problem and ensures you always have space when you need it.
+</Tip>

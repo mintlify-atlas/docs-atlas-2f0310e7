@@ -1,0 +1,283 @@
+---
+title: "File Management"
+description: "Drag-and-drop interface for managing and deleting files"
+---
+
+SquirrelDisk provides an intuitive file management interface that makes it easy to explore, sort, and delete files directly from the application.
+
+## File List Sidebar
+
+The sidebar displays all files and folders in the currently focused directory, sorted by size (largest first):
+
+```tsx
+{focusedDirectory &&
+  focusedDirectory.children &&
+  focusedDirectory.children.map((c, index) => (
+    <FileLine
+      key={c.data.id}
+      item={c}
+      hoveredItem={hoveredItem}
+      d3Chart={d3Chart}
+      index={index}
+      deleteMap={deleteMap.current}
+    />
+  ))}
+```
+
+Each file line shows:
+- **Icon**: Visual file/folder icon based on file type
+- **Name**: Full file or folder name
+- **Size**: Exact size in GB
+
+<Info>
+The file list automatically updates when you navigate through directories in the sunburst chart.
+</Info>
+
+## Sorting by Size
+
+Files and folders are always displayed in descending order by size, making it easy to identify the largest space consumers immediately. The largest items appear at the top of the list.
+
+<Tip>
+Combine the visual sunburst chart with the sorted sidebar to quickly identify what's taking up the most space.
+</Tip>
+
+## Drag-and-Drop with React Beautiful DnD
+
+SquirrelDisk uses React Beautiful DnD to provide smooth drag-and-drop functionality:
+
+```tsx
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+<DragDropContext
+  onDragEnd={(result) => {
+    if (result.destination?.droppableId !== "deletelist") {
+      return;
+    }
+    const item = focusedDirectory!.children!.find(
+      (i) => i.data.id === result.draggableId
+    );
+    setDeleteList((val) => {
+      if (!val.find((e) => e.data.id === item!.data.id)) {
+        deleteMap.current.set(item!.data.id, true);
+        return [...val, item!];
+      } else {
+        return val;
+      }
+    });
+  }}
+>
+```
+
+### How to Use Drag-and-Drop
+
+1. **Click and hold** any file or folder in the sidebar
+2. **Drag** it to the deletion area at the bottom
+3. **Release** to add it to the deletion queue
+
+Items marked for deletion are highlighted with a red border:
+
+```tsx
+<div
+  className={
+    deleteMap.has(item.data.id)
+      ? "border border-red-800 hover:border-red-900"
+      : " "
+  }
+>
+```
+
+<Note>
+Dragging items to the deletion area doesn't immediately delete them - you must click the "Delete" button to confirm.
+</Note>
+
+## Deletion Area
+
+The deletion area at the bottom of the sidebar allows you to batch delete multiple files:
+
+```tsx
+<Droppable droppableId="deletelist">
+  {(provided) => (
+    <div
+      className="rounded-lg border border-gray-500 border-dashed p-2 text-gray-500 text-center mb-0"
+      ref={provided.innerRef}
+      {...provided.droppableProps}
+    >
+      {deleteList.length == 0 && (
+        <>Drag file and folders here to delete</>
+      )}
+      {deleteList.length > 0 && (
+        <div>
+          <div>
+            {deleteList.length} files selected
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+</Droppable>
+```
+
+### Batch Operations
+
+You can queue multiple files and folders for deletion:
+
+1. Drag items one by one to the deletion area
+2. The counter shows how many items are selected
+3. Click "Clear Selection" to remove all items from the queue
+4. Click "Delete" to permanently remove all selected items
+
+<Tip>
+Use batch deletion to clean up multiple large files at once, saving time compared to deleting them individually.
+</Tip>
+
+## Deletion Process
+
+When you click the "Delete" button, SquirrelDisk:
+
+1. Shows a progress indicator
+2. Deletes files one by one
+3. Updates the chart in real-time
+4. Handles both files and directories recursively
+
+```tsx
+for (let node of deleteList) {
+  const nodePath = buildFullPath(node)
+    .replace("\\/", "/")
+    .replace("\\", "/");
+  try {
+    removeDir(nodePath, { recursive: true })
+      .catch((err) => removeFile(nodePath));
+    successful.push(node);
+    setDeleteState((prev) => ({
+      ...prev,
+      current: prev.current + 1,
+    }));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// Update the chart
+d3Chart.current.deleteNodes(successful);
+```
+
+The button shows progress while deleting:
+
+```tsx
+{deleteState.isDeleting
+  ? "Deleting " + deleteState.current + " of " + deleteState.total
+  : "Delete"}
+```
+
+<Note>
+Deleted files are permanently removed from your system. Make sure you've selected the correct items before clicking Delete.
+</Note>
+
+## File Explorer Integration
+
+SquirrelDisk integrates with your system's native file explorer for easy access to files.
+
+### Right-Click to Open
+
+Right-click any file or folder to open it in your system's file explorer:
+
+```tsx
+onContextMenu={(e) => {
+  e.preventDefault();
+  invoke("show_in_folder", { path: buildFullPath(item) });
+}}
+```
+
+### Platform-Specific Commands
+
+SquirrelDisk uses the appropriate command for your operating system:
+
+#### Windows
+
+Uses `explorer` with the `/select` flag to highlight the file:
+
+```rust
+#[cfg(target_os = "windows")]
+{
+  let re = Regex::new(r"/").unwrap();
+  let result = re.replace_all(&path, "\\");
+  Command::new("explorer")
+    .args(["/select,", format!("{}", result).as_str()])
+    .spawn()
+    .unwrap();
+}
+```
+
+#### macOS
+
+Uses `open -R` to reveal the file in Finder:
+
+```rust
+#[cfg(target_os = "macos")]
+{
+  Command::new("open")
+    .args(["-R", &path])
+    .spawn()
+    .unwrap();
+}
+```
+
+#### Linux
+
+Uses `xdg-open` to open the containing directory:
+
+```rust
+#[cfg(target_os = "linux")]
+{
+  let new_path = match metadata(&path).unwrap().is_dir() {
+    true => path,
+    false => {
+      let mut path2 = PathBuf::from(path);
+      path2.pop();
+      path2.into_os_string().into_string().unwrap()
+    }
+  };
+  Command::new("xdg-open").arg(&new_path).spawn().unwrap();
+}
+```
+
+<Info>
+On Linux, xdg-open opens the containing folder rather than selecting the specific file, as this is the most reliable cross-desktop approach.
+</Info>
+
+## File Icons
+
+SquirrelDisk uses `vscode-icons-js` to display familiar file and folder icons:
+
+```tsx
+<img
+  className="h-4 w-4 basis-1/12 mr-3"
+  src={
+    item.data.isDirectory
+      ? "/fileicons/" + getIconForFolder(item.data.name)
+      : "/fileicons/" + (getIconForFile(item.data.name) || "default_file.svg")
+  }
+/>
+```
+
+Icons are automatically selected based on:
+- File extension (for files)
+- Folder name patterns (for common folders like `.git`, `node_modules`, etc.)
+
+<Tip>
+Familiar icons make it easier to quickly identify file types without reading extensions.
+</Tip>
+
+## Hover Synchronization
+
+When you hover over an item in the file list, the corresponding arc in the sunburst chart is highlighted, and vice versa. This bi-directional synchronization helps you understand the relationship between the list and visual representations.
+
+```tsx
+<div
+  className={
+    hoveredItem && item.data && hoveredItem.id === item.data.id
+      ? "bg-black/20"
+      : " "
+  }
+>
+```

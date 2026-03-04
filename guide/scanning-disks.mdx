@@ -1,0 +1,163 @@
+---
+title: Scanning Disks
+description: Learn how to scan disks and folders to analyze disk space usage in SquirrelDisk
+---
+
+SquirrelDisk provides fast and efficient disk scanning capabilities to help you identify where your storage is being used. This guide covers everything you need to know about scanning disks and folders.
+
+## Selecting What to Scan
+
+SquirrelDisk offers two ways to start a scan:
+
+### Scanning a Disk
+
+<Steps>
+  <Step title="Launch SquirrelDisk">
+    Open the application to see a list of all available disks on your system.
+  </Step>
+  
+  <Step title="Choose your disk">
+    Click on any disk from the list to start a quick scan. The disk list shows:
+    - Disk name and mount point
+    - Total capacity
+    - Used space percentage
+    - Available free space
+  </Step>
+</Steps>
+
+<Note>
+  External drives and removable media are automatically detected and appear in the disk list with a special icon.
+</Note>
+
+### Scanning a Specific Folder
+
+If you only want to analyze a specific folder:
+
+<Steps>
+  <Step title="Select folder option">
+    Click on "Select a folder to Scan" at the bottom of the disk list.
+  </Step>
+  
+  <Step title="Browse and select">
+    Choose any folder from the file picker dialog. The scan will begin immediately after selection.
+  </Step>
+</Steps>
+
+## Understanding Scan Types
+
+SquirrelDisk offers two scan modes with different performance characteristics:
+
+### Quick Scan (Default)
+
+When you **left-click** on a disk, SquirrelDisk performs a quick scan:
+
+- Uses a minimum ratio parameter of `0.001`
+- Focuses on larger files and folders
+- Faster completion time
+- Ideal for most use cases
+
+### Full Scan
+
+When you **right-click** on a disk, SquirrelDisk performs a full scan:
+
+- Uses a minimum ratio parameter of `0` (no filtering)
+- Analyzes every file and folder
+- Takes longer to complete
+- Provides the most comprehensive view
+
+<Tip>
+  Right-click any disk in the list to initiate a full scan. You'll see the tooltip "Tip: Right Click for a full disk scan (slower)" at the bottom of the screen.
+</Tip>
+
+## Monitoring Scan Progress
+
+While scanning, SquirrelDisk displays real-time progress:
+
+```
+Scanning /path/to/disk 45.23%
+```
+
+The progress indicator shows:
+- **Disk path** being scanned
+- **Percentage complete** based on total disk space
+- **Visual progress bar** filling from left to right
+
+The scan progress is calculated by comparing the bytes processed against the total used space on the disk.
+
+<Note>
+  The progress percentage is capped at the actual used space to account for filesystem overhead and hard links.
+</Note>
+
+## Canceling a Scan
+
+If you need to stop a scan in progress:
+
+<Steps>
+  <Step title="Click the Back button">
+    During scanning, a "Back" button appears below the progress bar.
+  </Step>
+  
+  <Step title="Return to disk list">
+    Clicking "Back" immediately stops the scan and returns you to the disk selection screen.
+  </Step>
+</Steps>
+
+<Warning>
+  Canceling a scan discards all progress. You'll need to start over if you want to scan that disk again.
+</Warning>
+
+## What Gets Scanned
+
+### Included in Scans
+
+- All user files and folders
+- System files (where accessible)
+- Hidden files and folders
+- Nested directory structures (up to 3 levels deep in visualization)
+
+### Excluded from Scans
+
+When scanning the root directory (`/`), SquirrelDisk automatically excludes system paths that should not be analyzed:
+
+- `/dev` - Device files
+- `/mnt` - Mount points
+- `/cdrom` - CD-ROM mounts
+- `/proc` - Process information
+- `/media` - Removable media mount points
+- `/Volumes` - macOS volume mounts
+- `/System` - macOS system files
+
+<Note>
+  These exclusions only apply when scanning the root directory. If you manually select one of these folders, it will be scanned.
+</Note>
+
+### Platform-Specific Exclusions
+
+SquirrelDisk also filters out certain platform-specific virtual mounts:
+
+- **macOS**: `/System/Volumes/Data` (duplicate of root filesystem)
+- **Linux**: 
+  - `/var/snap/firefox/common/host-hunspell`
+  - `/boot/efi`
+
+## After Scanning
+
+Once the scan completes:
+
+1. The interface automatically transitions to the results view
+2. The sunburst chart visualization appears, showing your disk space usage
+3. The file list sidebar displays the contents of the scanned location
+4. You can immediately begin navigating and analyzing your disk space
+
+<Tip>
+  The first scan of a large disk may take several minutes. Subsequent scans of the same area will benefit from filesystem caching and may be faster.
+</Tip>
+
+## Scan Status Events
+
+During scanning, SquirrelDisk tracks:
+- **Items scanned**: Number of files and folders processed
+- **Total bytes**: Cumulative size of scanned items
+- **Errors encountered**: Files that couldn't be accessed
+
+These statistics help ensure the scan is progressing correctly and alert you to any access issues.

@@ -1,0 +1,182 @@
+---
+title: Installing on Linux
+description: Step-by-step guide to install SquirrelDisk on Linux
+---
+
+SquirrelDisk is currently distributed as a `.deb` package for Debian-based distributions (Ubuntu, Debian, Linux Mint, Pop!_OS, etc.).
+
+## Download
+
+Download the latest `.deb` package from the [GitHub releases page](https://github.com/adileo/squirreldisk/releases).
+
+## Installation Steps
+
+<Steps>
+  <Step title="Download the Package">
+    Download the `.deb` file for your architecture (usually `amd64` for 64-bit systems):
+    
+    ```bash
+    # Example - replace with actual version number
+    wget https://github.com/adileo/squirreldisk/releases/download/v0.3.4/squirreldisk_0.3.4_amd64.deb
+    ```
+  </Step>
+
+  <Step title="Install the Package">
+    Install using `dpkg`:
+    
+    ```bash
+    sudo dpkg -i squirreldisk_*.deb
+    ```
+    
+    <Info>
+      The `*` wildcard will match any version of the package in your current directory.
+    </Info>
+  </Step>
+
+  <Step title="Install Dependencies (if needed)">
+    If you encounter dependency errors, run:
+    
+    ```bash
+    sudo apt-get install -f
+    ```
+    
+    This will automatically install any missing dependencies.
+  </Step>
+
+  <Step title="Launch SquirrelDisk">
+    You can now launch SquirrelDisk from your application menu or by running:
+    
+    ```bash
+    squirreldisk
+    ```
+  </Step>
+</Steps>
+
+## Alternative Installation Methods
+
+### Using APT (After downloading .deb)
+
+<CodeGroup>
+```bash Ubuntu/Debian
+sudo apt install ./squirreldisk_*.deb
+```
+
+```bash Using gdebi
+sudo apt install gdebi-core
+sudo gdebi squirreldisk_*.deb
+```
+</CodeGroup>
+
+Using `apt install` or `gdebi` will automatically handle dependencies.
+
+## System Requirements
+
+- Ubuntu 18.04 or later (or equivalent Debian-based distribution)
+- 64-bit processor (amd64)
+- Minimum 2GB RAM recommended
+- GTK 3.0 or later (usually pre-installed)
+
+## Dependencies
+
+According to the build configuration, SquirrelDisk has no additional package dependencies beyond what's typically installed on a standard desktop Linux system. The application bundles all required components.
+
+## Troubleshooting
+
+### Package Installation Fails
+
+If you see errors during installation:
+
+```bash
+# Check for dependency issues
+sudo apt-get install -f
+
+# Or try reinstalling
+sudo dpkg -i --force-overwrite squirreldisk_*.deb
+```
+
+### Command Not Found
+
+If `squirreldisk` command is not found after installation:
+
+1. Verify the installation:
+   ```bash
+   dpkg -l | grep squirreldisk
+   ```
+
+2. Check the installation location:
+   ```bash
+   which squirreldisk
+   ```
+
+3. Try launching from the full path:
+   ```bash
+   /usr/bin/squirreldisk
+   ```
+
+### Permission Denied Errors
+
+If SquirrelDisk can't access certain directories:
+
+- Run the app with elevated privileges to scan system directories:
+  ```bash
+  sudo squirreldisk
+  ```
+
+<Warning>
+  Running GUI applications with `sudo` can pose security risks. Only do this when necessary to scan system directories.
+</Warning>
+
+### App Won't Start or Crashes
+
+1. Check if all dependencies are installed:
+   ```bash
+   ldd /usr/bin/squirreldisk
+   ```
+
+2. Run from terminal to see error messages:
+   ```bash
+   squirreldisk
+   ```
+
+3. Check system logs:
+   ```bash
+   journalctl -xe | grep squirreldisk
+   ```
+
+4. Report the issue on the [GitHub issue page](https://github.com/adileo/squirreldisk/issues) with error output
+
+### Missing GTK or Graphics Libraries
+
+If you get errors about missing GTK libraries:
+
+```bash
+sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-37
+```
+
+## Uninstallation
+
+To remove SquirrelDisk:
+
+```bash
+sudo apt remove squirreldisk
+```
+
+To remove including configuration files:
+
+```bash
+sudo apt purge squirreldisk
+```
+
+## Updates
+
+<Info>
+  SquirrelDisk includes an auto-updater that checks for new versions when you launch the app. However, on Linux, you may need to manually download and install updates.
+</Info>
+
+To update to a new version:
+
+1. Download the latest `.deb` package
+2. Install it using the same commands - it will upgrade the existing installation:
+   ```bash
+   sudo dpkg -i squirreldisk_*.deb
+   ```

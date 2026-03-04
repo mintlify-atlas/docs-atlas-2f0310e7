@@ -1,0 +1,235 @@
+---
+title: 'Frequently Asked Questions'
+description: 'Common questions about SquirrelDisk'
+---
+
+## General Questions
+
+<Accordion title="Is SquirrelDisk safe to use?">
+  Yes, SquirrelDisk is completely safe and open source. You can inspect the entire source code on [GitHub](https://github.com/adileo/squirreldisk).
+
+  **What it does:**
+  - Scans your disk to analyze file sizes using the [parallel-disk-usage](https://github.com/KSXGitHub/parallel-disk-usage) engine
+  - Displays results in an interactive sunburst chart
+  - Can delete files you explicitly select (permanently, not to trash)
+
+  **What it doesn't do:**
+  - No telemetry or analytics collection
+  - No network connections (except for checking updates on launch)
+  - No data sent to external servers
+  - No access to files you don't explicitly scan
+
+  The app uses Tauri (Rust + WebView) which provides a secure, sandboxed environment. File system access is restricted to only the operations needed (scanning and deletion).
+</Accordion>
+
+<Accordion title="Why are the binaries unsigned? Why does my OS warn me?">
+  Code signing certificates cost hundreds of dollars per year ($300-400 for Windows, $99/year for macOS). To keep SquirrelDisk completely free and open source, the developer has chosen not to pay for these certificates.
+
+  **This means:**
+  - Windows will show "Windows protected your PC" warnings
+  - macOS Gatekeeper will block the app initially
+  - Some antivirus software may flag it as potentially unwanted
+
+  **This is normal for unsigned open source software.** Many popular open source tools face the same issue.
+
+  **To verify safety:**
+  - Only download from the official [GitHub releases page](https://github.com/adileo/squirreldisk/releases)
+  - Check the source code yourself on GitHub
+  - The app is licensed under AGPL-3.0, guaranteeing transparency
+
+  Read more about this issue: [Why codesigning is problematic for open source](https://news.ycombinator.com/item?id=19330062)
+</Accordion>
+
+<Accordion title="Does SquirrelDisk collect any data or telemetry?">
+  **No.** SquirrelDisk does not collect any usage data, analytics, or telemetry.
+
+  The only network connection the app makes is:
+  - Checking for updates on app launch (contacts `squirreldisk.com/api/updates/`)
+  - This can be disabled if you prefer
+
+  All scanning and analysis happens entirely on your local machine. No data about your files or disk usage is ever sent anywhere.
+
+  You can verify this by:
+  - Checking the source code on GitHub
+  - Using network monitoring tools to observe the app's connections
+  - Running the app completely offline (updates won't check, but everything else works)
+</Accordion>
+
+<Accordion title="How accurate are the size calculations?">
+  SquirrelDisk uses **apparent size** (logical file size) rather than size-on-disk, which means:
+
+  **Apparent size:**
+  - The actual amount of data in the file
+  - What you see in most file properties dialogs
+  - More consistent across different file systems
+
+  **Why not size-on-disk?**
+  - Size-on-disk varies based on block size and file system
+  - Includes metadata and file system overhead
+  - Less meaningful for comparing actual data usage
+
+  **Accuracy considerations:**
+  - Hard links: Each hard link is counted separately (may inflate totals)
+  - Symbolic links: Not followed by default (to prevent circular references)
+  - Sparse files: Counted at apparent size, not actual disk usage
+  - Compressed file systems: Shows uncompressed size
+
+  For most use cases (finding large files to delete), apparent size is the most useful metric.
+</Accordion>
+
+<Accordion title="Can I recover files after deleting them?">
+  **No. Deletion through SquirrelDisk is permanent.**
+
+  When you delete files using SquirrelDisk:
+  - Files bypass the Recycle Bin (Windows) or Trash (macOS/Linux)
+  - They are immediately removed from the file system
+  - Recovery is extremely difficult or impossible
+
+  <Warning>
+    Always double-check what you're deleting. Consider moving important files to a backup location before deletion if you're unsure.
+  </Warning>
+
+  **Best practices:**
+  - Review the delete queue carefully before confirming
+  - Start with small, obviously unnecessary files
+  - Keep backups of important data
+  - Use your OS's native file manager for important deletions if you want trash/recycle bin protection
+</Accordion>
+
+## Technical Questions
+
+<Accordion title="Why are some folders missing from the scan results?">
+  There are several reasons a folder might not appear in your scan results:
+
+  **1. Permission restrictions:**
+  - You don't have read access to the folder
+  - System folders are protected by the OS
+  - The folder requires administrator/root privileges
+
+  **2. Intentionally excluded paths:**
+  When scanning from root (/), SquirrelDisk automatically excludes:
+  - `/dev` - Device files
+  - `/proc` - Process information
+  - `/mnt` - Mount points
+  - `/cdrom` - CD-ROM mount
+  - `/media` - Removable media
+  - `/Volumes` - macOS volume mounts
+  - `/System` - macOS system files
+
+  These are excluded to prevent errors and meaningless results.
+
+  **3. Size threshold:**
+  By default, SquirrelDisk uses a minimum ratio filter. Very small folders (less than 1% of total scanned size) may not appear in the chart to keep it readable.
+
+  **4. Scan errors:**
+  Check the error count in the progress indicator. If there are many errors, some folders couldn't be read.
+</Accordion>
+
+<Accordion title="What's the difference between SquirrelDisk and WinDirStat/DaisyDisk/WizTree?">
+  SquirrelDisk is an open source alternative with some key differences:
+
+  **vs. WinDirStat:**
+  - ✅ Much faster scanning (parallel engine)
+  - ✅ Modern, clean interface
+  - ✅ Cross-platform (Windows, macOS, Linux)
+  - ✅ Sunburst chart instead of treemap
+  - ⚠️ Still in alpha, less mature
+
+  **vs. DaisyDisk:**
+  - ✅ Free and open source (DaisyDisk is $9.99)
+  - ✅ Cross-platform (DaisyDisk is macOS only)
+  - ✅ Similar sunburst visualization
+  - ⚠️ Less polished UI
+  - ⚠️ Fewer features currently
+
+  **vs. WizTree:**
+  - ✅ Cross-platform (WizTree is Windows only)
+  - ✅ Open source
+  - ⚠️ Slower on Windows (WizTree uses MFT parsing)
+  - ⚠️ Different visualization approach
+
+  **SquirrelDisk advantages:**
+  - Built with modern tech (Rust + Tauri)
+  - Active development and open to contributions
+  - Privacy-focused (no telemetry)
+  - Free forever, no ads or upsells
+</Accordion>
+
+<Accordion title="Is SquirrelDisk really open source?">
+  **Yes!** SquirrelDisk is fully open source under the AGPL-3.0 license.
+
+  **What this means:**
+  - All source code is available on [GitHub](https://github.com/adileo/squirreldisk)
+  - You can inspect, modify, and distribute the code
+  - You can contribute improvements
+  - Commercial use is allowed
+  - If you modify and distribute it, you must also share your changes
+
+  **Technology stack:**
+  - Backend: Rust (via Tauri framework)
+  - Frontend: React + TypeScript
+  - Disk scanning: [parallel-disk-usage](https://github.com/KSXGitHub/parallel-disk-usage) (also open source)
+  - Visualization: D3.js
+
+  You can build SquirrelDisk from source yourself if you prefer:
+  ```bash
+  git clone https://github.com/adileo/squirreldisk.git
+  cd squirreldisk
+  npm install
+  npm run tauri build
+  ```
+</Accordion>
+
+<Accordion title="How do I report bugs?">
+  Please report bugs on [GitHub Issues](https://github.com/adileo/squirreldisk/issues).
+
+  See the [Reporting Bugs](/support/reporting-bugs) page for detailed information on what to include in your report.
+
+  **Quick version:**
+  1. Search existing issues first
+  2. Create a new issue with:
+     - Your OS and version
+     - SquirrelDisk version (currently 0.3.4)
+     - Steps to reproduce
+     - Expected vs actual behavior
+     - Screenshots if helpful
+  3. Be clear and respectful
+
+  You can also join the [Discord community](https://discord.gg/Xp8QtMM65w) to discuss issues informally.
+</Accordion>
+
+<Accordion title="How can I contribute to SquirrelDisk?">
+  Contributions are welcome! Here's how you can help:
+
+  **For developers:**
+  - Browse [open issues](https://github.com/adileo/squirreldisk/issues) for bugs to fix or features to implement
+  - Submit pull requests with improvements
+  - Help review pull requests from other contributors
+  - Improve documentation
+
+  **For non-developers:**
+  - Report bugs you encounter
+  - Suggest features on [GitHub Discussions](https://github.com/adileo/squirreldisk/discussions)
+  - Help other users on Discord
+  - Share SquirrelDisk with others who might find it useful
+  - Write tutorials or blog posts
+
+  **Getting started:**
+  1. Fork the repository on GitHub
+  2. Join the [Discord community](https://discord.gg/Xp8QtMM65w)
+  3. Read the code - the developer notes it's still "spaghetti" and needs refactoring, so don't be intimidated!
+  4. Start with small improvements or bug fixes
+
+  <Note>
+    The project maintainer describes the codebase as needing refactoring, which means there's plenty of opportunity to make meaningful improvements!
+  </Note>
+</Accordion>
+
+## Still Have Questions?
+
+If your question isn't answered here:
+
+- Check the [Troubleshooting](/support/troubleshooting) guide
+- Join the [Discord community](https://discord.gg/Xp8QtMM65w)
+- Browse [GitHub Discussions](https://github.com/adileo/squirreldisk/discussions)
+- Review [existing issues](https://github.com/adileo/squirreldisk/issues)

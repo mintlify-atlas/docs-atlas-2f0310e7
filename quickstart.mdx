@@ -1,80 +1,185 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get up and running with SquirrelDisk in minutes
 ---
 
-## Get started in three steps
+This guide will help you install SquirrelDisk and analyze your first disk in just a few minutes.
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
+Before you begin, make sure your system meets the minimum requirements:
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+- **Windows**: Windows 10 or later (64-bit)
+- **macOS**: macOS 10.15 Catalina or later (Intel or Apple Silicon)
+- **Linux**: Ubuntu 20.04 or later, or any modern Linux distribution with GTK 3.0
+
+## Installation and First Scan
+
+<Steps>
+  <Step title="Download SquirrelDisk">
+    Visit the [GitHub releases page](https://github.com/adileo/squirreldisk/releases) and download the installer for your platform:
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    - **Windows**: Download the `.exe` installer
+    - **macOS**: Download the `.dmg` disk image
+    - **Linux**: Download the `.deb` package (for Ubuntu/Debian)
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+    <Warning>
+    SquirrelDisk binaries are not code-signed. You will see security warnings on first launch. This is expected behavior for open-source applications. See our [installation guides](/installation/windows) for details on how to bypass these warnings safely.
+    </Warning>
+  </Step>
 
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+  <Step title="Install the application">
+    Run the installer you downloaded:
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    **Windows:**
+    1. Run the `.exe` installer
+    2. When Windows Defender SmartScreen appears, click **More info**
+    3. Click **Run anyway** to proceed with installation
+    
+    **macOS:**
+    1. Open the `.dmg` file
+    2. Drag SquirrelDisk to your Applications folder
+    3. Right-click the app and select **Open** (you'll need to do this twice)
+    4. Click **Open** in the security dialog
+    
+    **Linux:**
+    ```bash
+    sudo dpkg -i squirreldisk_*.deb
+    ```
+    
+    <Info>
+    For detailed platform-specific installation instructions, see the [Installation](/installation/windows) section.
+    </Info>
+  </Step>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+  <Step title="Launch SquirrelDisk">
+    Open SquirrelDisk from your Applications folder, Start menu, or application launcher. The app will display a list of all available disks and storage volumes on your system.
+    
+    You'll see each disk with:
+    - Disk name and mount point
+    - Total capacity
+    - Used and available space
+    - Visual indicator for removable drives
+  </Step>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+  <Step title="Select a disk or folder to scan">
+    You can scan an entire disk or a specific folder:
+    
+    - **Quick scan**: Left-click a disk to scan with the default settings (filters out very small files for faster results)
+    - **Full scan**: Right-click a disk to scan every file and folder (slower but more complete)
+    - **Folder scan**: Use the folder picker to select a specific directory
+    
+    <Tip>
+    Start with a quick scan of your largest disk. You can always run a full scan later if needed.
+    </Tip>
+    
+    The scan will begin immediately after you select a disk or folder.
+  </Step>
 
-### Step 3: Go live
+  <Step title="Monitor scan progress">
+    During the scan, you'll see real-time progress information:
+    
+    - **Progress bar**: Shows percentage of disk analyzed
+    - **Items scanned**: Number of files and folders processed
+    - **Total size**: Cumulative size of all scanned items
+    
+    Scan times vary based on:
+    - Disk size and speed
+    - Number of files and folders
+    - System performance
+    
+    A typical 500GB disk with moderate file count takes 10-30 seconds to scan.
+    
+    <Info>
+    You can cancel the scan at any time by clicking the **Back** button.
+    </Info>
+  </Step>
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+  <Step title="Explore the results">
+    When the scan completes, you'll see the interactive sunburst chart visualization:
+    
+    - **Click on any segment** to zoom into that folder
+    - **Click the center circle** to zoom back out to the parent folder
+    - **Hover over segments** to see file/folder names and sizes
+    - **Use the sidebar** to see a sorted list of items in the current folder
+    
+    The sunburst chart uses color and size to represent disk usage:
+    - Larger segments = more disk space used
+    - Colors differentiate between folders at the top level
+    - Darker shades = deeper folder levels
+    
+    <Tip>
+    Look for surprisingly large segments that might contain files you no longer need.
+    </Tip>
+  </Step>
 
-## Next steps
+  <Step title="Delete unwanted files">
+    SquirrelDisk makes cleanup easy with drag-and-drop deletion:
+    
+    1. **Drag files or folders** from the sidebar or chart to the deletion area at the bottom
+    2. **Review your selection** - the deletion area shows how many items you've selected
+    3. **Click Delete** to permanently remove the selected items
+    
+    <Warning>
+    Deletion is permanent! Files are deleted directly, not moved to Trash/Recycle Bin. Make sure you've selected the right items before clicking Delete.
+    </Warning>
+    
+    After deletion, the chart updates automatically to reflect the freed space.
+  </Step>
+</Steps>
 
-Now that you have your docs running, explore these key features:
+## Tips for Effective Cleanup
+
+Now that you know the basics, here are some tips to help you reclaim disk space effectively:
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Look for duplicate downloads" icon="copy">
+    Check your Downloads folder for duplicate installers, images, or documents you've downloaded multiple times
+  </Card>
+  <Card title="Clear caches" icon="broom">
+    Application caches (browsers, build tools, package managers) can consume gigabytes of space
+  </Card>
+  <Card title="Remove old projects" icon="folder">
+    Development projects with node_modules, build artifacts, or virtual environments can be surprisingly large
+  </Card>
+  <Card title="Archive media files" icon="photo-film">
+    Move photos, videos, and music you rarely access to external storage or cloud services
+  </Card>
 </CardGroup>
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+## Troubleshooting
+
+If you encounter issues during installation or your first scan:
+
+<Accordion title="The app won't launch or shows security warnings">
+  This is expected for unsigned open-source applications. Follow the platform-specific instructions in the [Installation](/installation/windows) guide to bypass security warnings safely.
+</Accordion>
+
+<Accordion title="Scan is taking a very long time">
+  Large disks with millions of files can take several minutes to scan. If the scan appears stuck:
+  - Check the progress indicator to confirm it's still scanning
+  - Cancel the scan and try a quick scan instead (filters out very small files)
+  - Close other applications that might be using disk I/O
+</Accordion>
+
+<Accordion title="Some folders are missing from the results">
+  SquirrelDisk excludes certain system directories like `/dev`, `/proc`, `/sys` on Linux and may skip folders where you don't have read permissions. On macOS, you may need to grant Full Disk Access in System Preferences → Security & Privacy.
+</Accordion>
+
+<Accordion title="The chart looks confusing or too crowded">
+  SquirrelDisk automatically aggregates very small files (less than 0.5% of the current view) into a "Smaller Items" group to keep the chart readable. Click on larger segments to zoom in and see more detail.
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="User Guide" icon="book-open" href="/guide/scanning-disks">
+    Learn advanced scanning and navigation techniques
+  </Card>
+  <Card title="Features" icon="stars" href="/features/sunburst-visualization">
+    Explore SquirrelDisk's powerful features in depth
+  </Card>
+  <Card title="Join the Community" icon="discord" href="https://discord.gg/Xp8QtMM65w">
+    Get help and share feedback on Discord
+  </Card>
+</CardGroup>

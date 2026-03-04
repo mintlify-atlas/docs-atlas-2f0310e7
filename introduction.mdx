@@ -1,0 +1,139 @@
+---
+title: Introduction
+description: Learn about SquirrelDisk, a fast and intuitive disk space analyzer for Windows, macOS, and Linux
+---
+
+SquirrelDisk is an open-source disk space analyzer that helps you quickly identify what's consuming your hard drive space. Built with Rust and Tauri, it combines high performance with an intuitive visual interface to make disk cleanup effortless.
+
+## What is SquirrelDisk?
+
+SquirrelDisk scans your disks and directories, then presents the results in an interactive sunburst chart that makes it easy to understand your disk usage at a glance. You can drill down into folders, identify large files, and delete unwanted content directly from the interface.
+
+Unlike traditional file explorers that show simple lists, SquirrelDisk's visual approach lets you instantly see which folders are taking up the most space. The larger the arc in the sunburst chart, the more space that folder or file is using.
+
+<CardGroup cols={2}>
+  <Card title="Fast scanning" icon="gauge-high">
+    Powered by Rust and the parallel-disk-usage library for lightning-fast directory traversal
+  </Card>
+  <Card title="Visual interface" icon="chart-pie">
+    Interactive sunburst chart built with D3.js shows disk usage proportionally
+  </Card>
+  <Card title="Drag and drop deletion" icon="trash">
+    Drag files and folders to a deletion zone, then remove them all at once
+  </Card>
+  <Card title="Cross-platform" icon="desktop">
+    Native apps for Windows, macOS, and Linux built with Tauri
+  </Card>
+</CardGroup>
+
+## Key features
+
+### Fast and deep scanning
+
+SquirrelDisk uses Rust's `parallel-disk-usage` library to scan directories in parallel, making it significantly faster than traditional file explorers. It can handle deep directory structures and large file systems efficiently.
+
+The scanning engine provides real-time progress updates, showing you how many files have been scanned and the total size discovered. You can scan an entire disk or choose a specific directory to analyze.
+
+### Interactive sunburst visualization
+
+The sunburst chart displays your disk usage as concentric rings, where:
+
+- Each ring represents a directory level
+- Arc size indicates the relative size of folders and files
+- Colors differentiate between top-level directories
+- Click any arc to zoom in and explore that directory
+- Click the center to zoom back to the parent directory
+
+Hovering over any arc shows you the full path and exact size in gigabytes.
+
+### Drag and drop deletion
+
+Instead of deleting files one by one, you can:
+
+1. Drag files and folders from the sidebar to the deletion zone
+2. Review your selection and add more items if needed
+3. Delete everything at once with a single click
+4. Watch the sunburst chart update in real-time as files are removed
+
+The deletion zone shows how many items you've selected and lets you clear the selection if you change your mind.
+
+### External disk detection
+
+SquirrelDisk automatically detects all connected drives, including:
+
+- Internal hard drives and SSDs
+- External USB drives
+- Network-mounted volumes
+- Removable media
+
+You can switch between disks without restarting the application.
+
+### File explorer integration
+
+Right-click any file or folder to open it in your system's file explorer:
+
+- Windows: Opens File Explorer with the item selected
+- macOS: Opens Finder with the item selected
+- Linux: Opens your default file manager
+
+### Auto-updater
+
+SquirrelDisk includes an auto-updater that checks for new versions when you launch the app. When an update is available, you'll see a dialog with release notes and the option to install it.
+
+The updater only runs on app launch—no notification spamming or background checks while you're working.
+
+## Why SquirrelDisk?
+
+SquirrelDisk is designed to be the easiest disk analyzer you'll ever use. Whether you're running out of space or just want to clean up old files, SquirrelDisk makes the process fast and intuitive.
+
+### Comparison to alternatives
+
+SquirrelDisk is an open-source alternative to popular disk analyzers:
+
+<CardGroup cols={2}>
+  <Card title="WinDirStat" icon="windows">
+    Windows-only, uses treemap visualization. SquirrelDisk offers a more modern sunburst chart and works across all platforms.
+  </Card>
+  <Card title="WizTree" icon="bolt">
+    Fast Windows analyzer. SquirrelDisk matches the speed with Rust while being cross-platform and open source.
+  </Card>
+  <Card title="TreeSize" icon="tree">
+    Commercial Windows software. SquirrelDisk is free, open source, and available on Windows, macOS, and Linux.
+  </Card>
+  <Card title="DaisyDisk" icon="apple">
+    Beautiful macOS analyzer. SquirrelDisk brings similar visual appeal to all platforms at no cost.
+  </Card>
+</CardGroup>
+
+### Technology stack
+
+SquirrelDisk leverages modern technologies for performance and cross-platform compatibility:
+
+- **Rust**: Core scanning logic and Tauri backend for native performance
+- **Tauri**: Cross-platform desktop framework with minimal bundle size
+- **React**: UI framework for the frontend interface
+- **D3.js**: Data visualization library for the interactive sunburst chart
+- **TypeScript**: Type-safe frontend development
+- **Vite**: Fast build tool and development server
+- **Tailwind CSS**: Utility-first styling framework
+
+The combination of Rust for the backend and React for the frontend delivers both speed and a responsive user experience.
+
+## Current status
+
+<Warning>
+SquirrelDisk is currently in **alpha** status. While it's fully functional, you may encounter bugs. Please report any issues on the [GitHub issue tracker](https://github.com/adileo/squirreldisk/issues).
+</Warning>
+
+The project is actively maintained and welcomes contributions. Join the [Discord community](https://discord.gg/Xp8QtMM65w) to discuss features, report bugs, or contribute to development.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Download and install SquirrelDisk on your platform
+  </Card>
+  <Card title="GitHub" icon="github" href="https://github.com/adileo/squirreldisk">
+    View the source code and contribute to the project
+  </Card>
+</CardGroup>

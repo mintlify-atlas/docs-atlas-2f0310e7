@@ -1,0 +1,283 @@
+---
+title: Deleting Files
+description: Learn how to safely delete files and folders using SquirrelDisk's drag-and-drop interface
+---
+
+SquirrelDisk provides an intuitive drag-and-drop interface for deleting files and folders. This guide explains how to safely remove unwanted items and reclaim disk space.
+
+## The Deletion Interface
+
+At the bottom of the file list sidebar, you'll find the deletion area:
+
+- **Empty state**: "Drag file and folders here to delete"
+- **With items**: Shows count and offers options to clear or delete
+- **Dashed border**: Visual indicator for the drop zone
+
+<Warning>
+  Deletions performed by SquirrelDisk are **permanent**. Items are removed from your filesystem immediately without going to the Trash/Recycle Bin. There is no undo functionality.
+</Warning>
+
+## Adding Items to the Deletion List
+
+### Using Drag and Drop
+
+<Steps>
+  <Step title="Select an item">
+    In the file list, click and hold on any file or folder you want to delete.
+  </Step>
+  
+  <Step title="Drag to deletion area">
+    While holding, drag the item down to the dashed box at the bottom of the sidebar.
+  </Step>
+  
+  <Step title="Drop to add">
+    Release the mouse button over the deletion area to add the item.
+  </Step>
+</Steps>
+
+### Visual Feedback
+
+When items are added to the deletion list:
+
+- The item displays a **red border** in the file list
+- The deletion area updates to show the count: `2 files selected`
+- The item remains visible in the file list (not removed yet)
+
+<Note>
+  You can add multiple items to the deletion list before executing the deletion. Navigate through different folders and continue adding items.
+</Note>
+
+## Reviewing Items Before Deletion
+
+Before executing the deletion, you should review your selection:
+
+### Deletion Counter
+
+The deletion area shows:
+```
+5 files selected - Clear Selection
+```
+
+This tells you:
+- **How many items** are queued for deletion
+- **Link to clear** if you change your mind
+
+### Visual Indicators in File List
+
+Items selected for deletion are marked with:
+- Red border (`border border-red-800`)
+- Darker red border on hover (`hover:border-red-900`)
+
+<Tip>
+  Navigate through your folder structure freely while building your deletion list. Selected items retain their red border no matter where you navigate in the chart.
+</Tip>
+
+## Clearing the Selection
+
+If you want to start over or change your mind:
+
+<Steps>
+  <Step title="Click Clear Selection">
+    Click the "Clear Selection" link in the deletion area.
+  </Step>
+  
+  <Step title="Confirm reset">
+    All items are immediately removed from the deletion list, and red borders disappear.
+  </Step>
+</Steps>
+
+This action:
+- Empties the deletion list
+- Removes all visual indicators
+- Returns the deletion area to its empty state
+- Does **not** delete any files
+
+## Executing the Deletion
+
+When you're ready to permanently delete the selected items:
+
+<Steps>
+  <Step title="Review your selection">
+    Double-check the count and ensure you want to delete these items.
+  </Step>
+  
+  <Step title="Click the Delete button">
+    Click the red "Delete" button at the bottom of the deletion area.
+  </Step>
+  
+  <Step title="Wait for completion">
+    The button shows progress: "Deleting 3 of 10"
+  </Step>
+  
+  <Step title="Automatic cleanup">
+    The deletion list clears automatically when complete.
+  </Step>
+</Steps>
+
+<Warning>
+  There is **no confirmation dialog**. Clicking the Delete button immediately begins permanent deletion. Make sure you've reviewed your selection carefully.
+</Warning>
+
+## Deletion Progress
+
+While deletion is in progress:
+
+- The Delete button becomes **disabled**
+- The button text changes to show progress:
+  ```
+  Deleting 3 of 10
+  ```
+- The counter updates in real-time as each item is deleted
+- You cannot add more items or cancel during deletion
+
+## How Deletion Works
+
+### File System Operations
+
+SquirrelDisk uses platform-native APIs to delete items:
+
+1. **Folders**: Recursively deleted with all contents using `removeDir({ recursive: true })`
+2. **Files**: Deleted directly using `removeFile()`
+3. **Hybrid handling**: If a folder appears to be a file (due to tree trimming), both methods are attempted
+
+### Error Handling
+
+If an item fails to delete:
+
+- The error is logged to the console
+- Deletion continues with remaining items
+- Failed items are **not** marked as successfully deleted
+- The chart updates only for successfully deleted items
+
+<Note>
+  You may encounter errors if files are:
+  - In use by another program
+  - Protected by system permissions
+  - On a read-only filesystem
+  - Already deleted by another process
+</Note>
+
+## Real-Time Chart Updates
+
+SquirrelDisk's visualization updates immediately after deletion:
+
+### Automatic Recalculation
+
+1. **Size updates**: All ancestor folders have their sizes reduced
+2. **Structure updates**: Deleted items are removed from the tree
+3. **Re-partitioning**: The sunburst chart recalculates arc sizes
+4. **Smooth animation**: The chart animates to reflect the new state
+
+### Visual Changes
+
+After deletion, you'll see:
+
+- Deleted arcs fade out and disappear
+- Remaining arcs expand to fill the space
+- Parent folder sizes decrease
+- File list updates to remove deleted items
+
+<Tip>
+  The real-time update means you can immediately see how much space you've freed without rescanning the entire disk.
+</Tip>
+
+## Deletion Safety Tips
+
+### Before Deleting
+
+<Steps>
+  <Step title="Verify paths">
+    Right-click items to open their location and verify they're what you expect.
+  </Step>
+  
+  <Step title="Check sizes">
+    Ensure the size matches what you expect for that file or folder.
+  </Step>
+  
+  <Step title="Review the full list">
+    Go through your deletion count and make sure the number seems right.
+  </Step>
+</Steps>
+
+### Items to Be Cautious With
+
+<Warning>
+  Exercise extreme caution when deleting:
+  - **System folders**: May break your operating system
+  - **Application folders**: May break installed programs
+  - **Document folders**: Ensure you have backups
+  - **Hidden files**: Often contain important configurations
+</Warning>
+
+### What You Cannot Recover
+
+Unlike moving to Trash/Recycle Bin:
+
+- Items are **immediately removed** from the filesystem
+- No "undo" or "restore" functionality exists
+- File recovery software may or may not work
+- Solid-state drives make recovery nearly impossible
+
+## Best Practices
+
+### Start Small
+
+1. Begin by deleting a single, unimportant file
+2. Verify it deletes successfully
+3. Gradually increase to larger deletions
+
+### Use Right-Click to Verify
+
+Before adding items to the deletion list:
+
+1. Right-click the item in the file list
+2. Verify the opened location matches what you expect
+3. Confirm you want to delete that specific item
+
+### Delete in Batches
+
+Rather than selecting many items at once:
+
+1. Delete 5-10 items at a time
+2. Verify the chart updates correctly
+3. Ensure nothing unexpected was deleted
+4. Continue with the next batch
+
+<Tip>
+  If you're unsure about deleting something, don't add it to the list. It's better to keep a file you might need than to delete something important.
+</Tip>
+
+## Platform-Specific Behaviors
+
+### Windows
+- Paths are converted from forward slashes to backslashes
+- File Explorer opens on right-click with the item selected
+
+### macOS
+- Finder opens on right-click with the item revealed
+- Uses native `open -R` command for file revelation
+
+### Linux
+- Default file manager opens the parent directory
+- Uses `xdg-open` for cross-desktop compatibility
+- May not select the specific file, but opens the folder
+
+## Troubleshooting
+
+### Items Won't Delete
+
+If deletion fails:
+
+1. Check if the file is open in another program
+2. Verify you have write permissions to that location
+3. Ensure the filesystem isn't read-only
+4. Try closing all programs and attempting again
+
+### Chart Doesn't Update
+
+If the chart doesn't update after deletion:
+
+1. Check the browser console for error messages
+2. Verify the deletion actually occurred using your file manager
+3. Try navigating to a parent directory and back
+4. If needed, rescan the disk to get accurate data

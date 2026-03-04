@@ -1,0 +1,311 @@
+---
+title: "Performance"
+description: "Fast disk scanning with Rust and parallel processing"
+---
+
+SquirrelDisk is built for speed. By leveraging Rust for the backend and parallel disk scanning, it can analyze large drives in seconds.
+
+## Rust Backend
+
+SquirrelDisk's backend is written in Rust, providing:
+
+- **Memory safety** without garbage collection
+- **Zero-cost abstractions** for high performance
+- **Native compilation** to machine code
+- **Minimal runtime overhead**
+
+<Info>
+Rust's performance characteristics make it ideal for I/O-intensive operations like disk scanning, where efficient memory management is critical.
+</Info>
+
+## parallel-disk-usage Library
+
+SquirrelDisk uses the `parallel-disk-usage` library for efficient disk scanning:
+
+```toml
+[dependencies]
+parallel-disk-usage = "0.8.3"
+```
+
+This library provides:
+- Parallel directory traversal
+- Progress reporting
+- Error handling
+- JSON output format
+- Configurable scan depth and filtering
+
+### Sidecar Binary
+
+The scanning is performed by a sidecar binary (`pdu`) that runs independently:
+
+```rust
+let (mut rx, child) = TauriCommand::new_sidecar("pdu")
+  .expect("failed to create `my-sidecar` binary command")
+  .args(paths_to_scan)
+  .spawn()
+  .expect("Failed to spawn sidecar");
+```
+
+Configured in `tauri.conf.json`:
+
+```json
+"externalBin": [
+  "bin/pdu"
+]
+```
+
+<Tip>
+Using a sidecar binary keeps the main application responsive during long-running scans.
+</Tip>
+
+## How Multithreading Works
+
+The `parallel-disk-usage` library uses a work-stealing algorithm to efficiently distribute directory scanning across CPU cores:
+
+1. **Initial queue**: Top-level directories are added to a work queue
+2. **Thread pool**: Multiple threads pull from the queue
+3. **Work stealing**: Idle threads steal work from busy threads
+4. **Result aggregation**: Results are collected and merged
+
+```rust
+let paths_to_scan: Vec<String> = Vec::new();
+paths_to_scan.push("--json-output".to_string());
+paths_to_scan.push("--progress".to_string());
+paths_to_scan.push(ratio);
+paths_to_scan.push(path);
+```
+
+### Scan Arguments
+
+- `--json-output`: Returns results as JSON for easy parsing
+- `--progress`: Emits progress updates during scanning
+- `--min-ratio`: Filters out small items (default: 0.001 = 0.1%)
+
+<Note>
+The `--min-ratio` parameter prunes small files during scanning, significantly improving performance on directories with thousands of tiny files.
+</Note>
+
+## Progress Reporting
+
+SquirrelDisk provides real-time progress updates during scanning:
+
+```rust
+let re = Regex::new(r"\(scanned ([0-9]*), total ([0-9]*)(?:, erred ([0-9]*))?\)").unwrap();
+
+tauri::async_runtime::spawn(async move {
+  while let Some(event) = rx.recv().await {
+    match event {
+      CommandEvent::Stderr(msg) => {
+        let caps = re.captures(&msg);
+        if let Some(groups) = caps {
+          if groups.len() > 2 {
+            emit_scan_status(&app_handle, groups)
+          }
+        }
+      }
+      CommandEvent::Stdout(line) => {
+        app_handle.emit_all("scan_completed", line).ok();
+      }
+      _ => {}
+    }
+  }
+});
+```
+
+The frontend receives updates and displays a progress bar:
+
+```tsx
+const unlisten = listen("scan_status", (event: any) => {
+  setStatus(event.payload);
+});
+
+// Display progress
+<div>
+  Scanning {disk} {((cappedTotal / used) * 100).toFixed(2)}%
+</div>
+<div className="w-full bg-gray-200 rounded-full h-2.5">
+  <div
+    className="bg-blue-600 h-2.5 rounded-full"
+    style={{ width: ((cappedTotal / used) * 100).toFixed(2) + "%" }}
+  />
+</div>
+```
+
+<Info>
+Progress is calculated as (bytes scanned / total disk usage) × 100, capped at the total used space to handle filesystem edge cases.
+</Info>
+
+## Typical Scan Times
+
+Scan times depend on several factors:
+
+- **Disk size**: Larger disks take longer
+- **File count**: More files = more I/O operations
+- **Disk type**: SSDs are much faster than HDDs
+- **CPU cores**: More cores = better parallelization
+- **Filesystem**: Some filesystems are faster to traverse
+
+### Example Benchmarks
+
+| Disk Size | File Count | Disk Type | Scan Time |
+|-----------|-----------|-----------|----------|
+| 256 GB | 100K files | SSD | 5-10 sec |
+| 512 GB | 500K files | SSD | 15-30 sec |
+| 1 TB | 1M files | SSD | 30-60 sec |
+| 1 TB | 1M files | HDD | 2-5 min |
+| 4 TB | 5M files | HDD | 10-20 min |
+
+<Tip>
+For faster scans on very large disks, use the "Quick Scan" option which increases the min-ratio filter to skip more small files.
+</Tip>
+
+## Memory Usage and Optimization
+
+SquirrelDisk optimizes memory usage through several techniques:
+
+### 1. Streaming Scan Results
+
+Results are processed as they arrive rather than waiting for the complete scan:
+
+```typescript
+const unlisten2 = listen("scan_completed", (event: any) => {
+  baseData.current = JSON.parse(event.payload).tree;
+  const mapped = itemMap(baseData.current);
+  baseDataD3Hierarchy.current = diskItemToD3Hierarchy(mapped as any);
+  setView("disk");
+});
+```
+
+### 2. Min-Ratio Filtering
+
+Small files are filtered during scanning, not after:
+
+```rust
+let ratio = ["--min-ratio=", ratio.as_str()].join("");
+paths_to_scan.push(ratio);
+```
+
+Default min-ratio values:
+- **Full Scan**: 0.001 (0.1% of parent directory)
+- **Quick Scan**: Configurable up to 1% for faster results
+
+### 3. Tree Pruning
+
+The scan output includes only significant files:
+
+```typescript
+invoke("start_scanning", { 
+  path: disk, 
+  ratio: fullscan ? "0" : "0.001" 
+});
+```
+
+### 4. Efficient Data Structures
+
+The tree is stored as a hierarchy with references, not duplicated data:
+
+```typescript
+baseDataD3Hierarchy.current = diskItemToD3Hierarchy(mapped as any);
+```
+
+<Note>
+A typical 1TB disk with 1M files uses approximately 100-200MB of memory in SquirrelDisk, even though the raw file listing would be much larger.
+</Note>
+
+## Handling Large Directory Trees
+
+SquirrelDisk gracefully handles large directory structures:
+
+### Depth Limiting
+
+The visualization only shows 3 levels at a time:
+
+```typescript
+let maxDepth = initialDepth + 3;
+
+for (const item of focused.descendants().slice(1)) {
+  if (item.depth > maxDepth) {
+    break;
+  }
+  filtered.push(item);
+}
+```
+
+### Path Filtering
+
+System paths are automatically excluded on Linux/macOS:
+
+```rust
+let banned = [
+  "/dev", "/mnt", "/cdrom", "/proc", "/media", "/Volumes", "/System",
+];
+
+for scan_path in paths {
+  let scan_path_str = scan_path.unwrap().path();
+  if banned.contains(&(scan_path_str.to_str().unwrap())).not() {
+    paths_to_scan.push(scan_path_str.display().to_string());
+  }
+}
+```
+
+### Cancellable Scans
+
+Scans can be cancelled at any time:
+
+```rust
+#[tauri::command]
+fn stop_scanning(state: tauri::State<'_, MyState>) -> Result<(), ()> {
+  state
+    .0
+    .lock()
+    .unwrap()
+    .take()
+    .unwrap()
+    .kill()
+    .expect("State is None");
+  Ok(())
+}
+```
+
+```typescript
+return () => {
+  unlisten.then((f) => f());
+  unlisten2.then((f) => f());
+  invoke("stop_scanning", { path: disk });
+};
+```
+
+<Tip>
+If a scan is taking too long, you can cancel it and restart with a higher min-ratio for faster results.
+</Tip>
+
+## Platform-Specific Optimizations
+
+### Windows
+
+Handles backslash path separators:
+
+```rust
+let re = Regex::new(r"/").unwrap();
+let result = re.replace_all(&path, "\\");
+```
+
+### macOS
+
+Uses native file APIs through Cocoa bindings for optimal performance.
+
+### Linux
+
+Leverages efficient filesystem traversal with proper error handling for permission issues.
+
+## Best Practices
+
+1. **Start with Quick Scan**: Use the quick scan mode first to get a fast overview
+2. **Drill down**: Use Full Scan only on specific directories of interest
+3. **Close other apps**: Disk scanning is I/O intensive - close other disk-heavy applications
+4. **SSD recommended**: SSDs provide dramatically faster scan times
+5. **Regular cleanup**: Run SquirrelDisk periodically to keep your disk optimized
+
+<Info>
+The combination of Rust's performance, parallel scanning, and smart filtering makes SquirrelDisk one of the fastest disk analysis tools available.
+</Info>

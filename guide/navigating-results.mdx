@@ -1,0 +1,219 @@
+---
+title: Navigating Results
+description: Understand the sunburst visualization and learn how to navigate your disk space analysis results
+---
+
+After scanning, SquirrelDisk presents your disk space data through an interactive sunburst chart and file list. This guide explains how to navigate and understand your results.
+
+## The Sunburst Chart Visualization
+
+The sunburst chart is a circular, hierarchical visualization that displays your disk space usage:
+
+### Chart Structure
+
+- **Center circle**: The currently focused directory
+- **Inner rings**: Immediate subdirectories and files
+- **Outer rings**: Nested contents (up to 3 levels deep)
+- **Arc size**: Proportional to file/folder size
+- **Colors**: Each top-level folder gets a unique color, with darker shades for deeper levels
+
+<Note>
+  The chart shows up to 3 levels of depth from your current location. Folders deeper than this exist in the data but aren't visualized until you navigate into them.
+</Note>
+
+### Color Coding
+
+SquirrelDisk uses an intelligent color system:
+
+- **Top-level folders**: Assigned unique rainbow colors
+- **Nested items**: Progressively darker shades of the parent color
+- **Folders**: 60% opacity
+- **Files**: 40% opacity
+
+The depth-based shading helps you understand how deep in the hierarchy each item is:
+
+```
+Depth 0 (root): Base color
+Depth 1: 20% darker
+Depth 2: 35% darker
+Depth 3: 45% darker
+Depth 4+: 55-60% darker
+```
+
+## Interacting with the Chart
+
+### Zooming Into Folders
+
+To explore a folder's contents:
+
+<Steps>
+  <Step title="Identify the folder">
+    Find the folder you want to explore in the sunburst chart.
+  </Step>
+  
+  <Step title="Click the arc">
+    Click on any arc segment in the chart.
+  </Step>
+  
+  <Step title="View updated display">
+    The chart smoothly animates and refocuses on that folder, showing its contents in detail.
+  </Step>
+</Steps>
+
+<Tip>
+  You can only click on folders (directories). Files don't have children to zoom into, so clicking them has no effect on the chart.
+</Tip>
+
+### Returning to Parent Directory
+
+To navigate back up the folder hierarchy:
+
+<Steps>
+  <Step title="Click the center">
+    Click on the center circle of the sunburst chart.
+  </Step>
+  
+  <Step title="View parent directory">
+    The chart animates back to show the parent directory.
+  </Step>
+</Steps>
+
+<Note>
+  When you're at the root of the scan, clicking the center has no effect since there's no parent to return to.
+</Note>
+
+### Hovering for Details
+
+Move your mouse over any arc or the center circle to see detailed information:
+
+- **File/folder name**
+- **Full path** from the root
+- **Size in GB** (displayed with 2 decimal places)
+
+The tooltip appears as you hover:
+
+```
+/Users/username/Documents/Projects/large-project
+45.32 GB
+```
+
+## The File List Sidebar
+
+The right sidebar shows a detailed list view of the currently focused directory.
+
+### Directory Header
+
+At the top of the sidebar, you'll see the current directory:
+
+- **Full path**: Complete filesystem path
+- **Total size**: Combined size of all contents
+- **Click to navigate**: Click to go to parent directory (same as clicking center)
+- **Right-click**: Opens the folder in your system file manager
+
+### File List
+
+Below the header, all files and folders in the current directory are listed:
+
+- **Icon**: File type or folder icon (using VS Code icon theme)
+- **Name**: File or folder name
+- **Size**: Individual item size in GB
+
+<Note>
+  Items in the file list are displayed with 2 decimal precision. For example: `3.45 GB` or `0.12 GB`.
+</Note>
+
+### Synchronized Navigation
+
+The chart and file list are synchronized:
+
+- Clicking an arc updates the file list
+- Clicking a folder in the list updates the chart
+- Hovering an arc highlights it in the list
+
+### Interacting with Files and Folders
+
+You can interact with items in the file list:
+
+- **Click folder**: Zooms the chart into that folder
+- **Click file**: Opens the file's location in your system file manager
+- **Right-click**: Opens the item's location in your system file manager
+- **Drag**: Drag items to the deletion area (see [Deleting Files](/guide/deleting-files))
+
+<Tip>
+  When an item is selected for deletion, it displays a red border in the file list.
+</Tip>
+
+## Understanding Depth Levels
+
+SquirrelDisk limits visualization to 3 levels deep from your current focus:
+
+### Why Only 3 Levels?
+
+1. **Performance**: Rendering too many arcs slows down the interface
+2. **Clarity**: Too many levels make the chart cluttered and hard to read
+3. **Interaction**: You can always navigate deeper by clicking
+
+### Small Items Grouping
+
+To keep the visualization clean, SquirrelDisk automatically groups small items:
+
+- Items smaller than **0.5%** of the current view are grouped together
+- The grouped items appear as "Smaller Items"
+- This prevents tiny files from cluttering the chart
+
+<Note>
+  The 0.5% threshold is calculated relative to the currently focused directory's size, not the entire disk.
+</Note>
+
+## Chart Animations
+
+All navigation in the sunburst chart is animated:
+
+- **Duration**: 750 milliseconds
+- **Effect**: Smooth interpolation between states
+- **Arc transitions**: Arcs grow, shrink, and fade as you navigate
+
+The animations help you understand:
+- Where you came from
+- Where you're going
+- How items relate spatially
+
+<Warning>
+  If you rapidly click multiple times, the animations queue up. Wait for one animation to complete before clicking again for the best experience.
+</Warning>
+
+## Navigation Tips
+
+### Finding Large Files
+
+1. Look for large arc segments in the outer rings
+2. Click the parent folder to zoom in
+3. Review the file list to see individual file sizes
+
+### Understanding Directory Structure
+
+1. Start at the root level
+2. Note the relative sizes of top-level folders by arc length
+3. Drill down into the largest folders first
+4. Use the path display to track your location
+
+### Quick Access to File Manager
+
+- **Right-click any item** in the file list to open its location in:
+  - **Windows**: Windows Explorer
+  - **macOS**: Finder
+  - **Linux**: Default file manager (xdg-open)
+
+<Tip>
+  The parent folder display at the top of the sidebar is clickable and also supports right-click to open in your file manager.
+</Tip>
+
+## Platform-Specific Behavior
+
+### Windows
+- Sizes calculated using 1024 bytes per KB (binary)
+- Paths use forward slashes in display, converted for system operations
+
+### macOS and Linux
+- Sizes calculated using 1000 bytes per KB (decimal, SI units)
+- Native path separators used throughout

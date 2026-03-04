@@ -1,0 +1,198 @@
+---
+title: 'Troubleshooting'
+description: 'Common issues and solutions for SquirrelDisk'
+---
+
+## Common Issues
+
+If you're experiencing problems with SquirrelDisk, check the solutions below for the most common issues.
+
+<Accordion title="App won't launch or shows security warnings">
+  **Problem:** When trying to open SquirrelDisk, you see security warnings or the app refuses to launch.
+
+  **Solution:**
+  
+  - **Windows:** Click "More Information" then "Run Anyway" when Windows Defender SmartScreen appears. The binaries are unsigned to keep the app free and open source. See [why binaries aren't codesigned](https://news.ycombinator.com/item?id=19330062) for more information.
+  
+  - **macOS:** Right-click the app and select "Open" (not double-click). You'll need to do this twice on first launch to bypass Gatekeeper. This only needs to be done once.
+  
+  - **Linux:** Ensure the downloaded file has execute permissions: `chmod +x SquirrelDisk*.AppImage`
+</Accordion>
+
+<Accordion title="Scan is slow or appears stuck">
+  **Problem:** The disk scan takes a very long time or seems to freeze.
+
+  **Solution:**
+  
+  - **Check the progress indicator:** Look at the bottom of the window for scan progress (scanned items, total size, errors).
+  
+  - **Large directories take time:** Scanning directories with millions of files (like node_modules, cache folders, or development directories) can take several minutes.
+  
+  - **Stop and restart:** Click the stop button and try scanning a smaller directory first to verify the app is working.
+  
+  - **Permissions issues:** The scan may be waiting for permission dialogs or encountering many permission errors. Check the error count in the progress indicator.
+
+  - **System resources:** Close other resource-intensive applications. SquirrelDisk uses the parallel-disk-usage engine which is efficient but still needs available system resources.
+</Accordion>
+
+<Accordion title="Chart not rendering or appears blank">
+  **Problem:** The sunburst chart doesn't display after scanning completes.
+
+  **Solution:**
+  
+  - **Wait for completion:** Ensure the scan has fully completed. Check for the "Scan completed" status.
+  
+  - **Try a different directory:** Scan a different folder to see if the issue is specific to one location.
+  
+  - **Check data size:** Very small directories (less than a few KB) may not render visible segments in the chart.
+  
+  - **Refresh the view:** Navigate back to the disk list and re-enter the disk detail view.
+  
+  - **GPU acceleration:** On Linux, try running with different rendering backends if you see blank charts.
+</Accordion>
+
+<Accordion title="Files or folders won't delete (permission errors)">
+  **Problem:** When trying to delete files through SquirrelDisk, you receive permission errors.
+
+  **Solution:**
+  
+  - **Run with elevated permissions:** On Windows, run as Administrator. On macOS/Linux, the app may need additional permissions for certain system folders.
+  
+  - **Check file permissions:** Some files may be locked by other applications or marked as read-only.
+  
+  - **System files are protected:** SquirrelDisk intentionally excludes certain system directories (/dev, /proc, /System, /Volumes) to prevent accidental damage.
+  
+  - **Use your file manager:** For stubborn files, try deleting them through your system's native file manager (Explorer, Finder, or Nautilus).
+
+  <Warning>
+    Deletion through SquirrelDisk is permanent and does not use the Recycle Bin/Trash. Always verify before deleting.
+  </Warning>
+</Accordion>
+
+<Accordion title="App crashes during scan">
+  **Problem:** SquirrelDisk crashes or closes unexpectedly while scanning.
+
+  **Solution:**
+  
+  - **Update to the latest version:** Check the [releases page](https://github.com/adileo/squirreldisk/releases) for updates. The current version (0.3.4) is in alpha and bugs are being actively fixed.
+  
+  - **Avoid root scan on macOS/Linux:** Scanning from the root (/) can encounter permission issues. Try scanning your home directory instead.
+  
+  - **Report the crash:** Please [report the issue](https://github.com/adileo/squirreldisk/issues) with details about what you were scanning when it crashed.
+  
+  - **Check logs:** On Linux, run the app from terminal to see error messages: `./SquirrelDisk*.AppImage`
+  
+  - **Memory issues:** Scanning extremely large directories (100GB+) with millions of files may require significant RAM.
+</Accordion>
+
+## Platform-Specific Issues
+
+### Windows
+
+<Accordion title="Windows Defender blocks the download">
+  **Problem:** Windows Defender or your antivirus software blocks the download or flags SquirrelDisk as malware.
+
+  **Solution:**
+  
+  The binaries are not code-signed because code signing certificates cost hundreds of dollars annually, which would prevent SquirrelDisk from being free and open source.
+  
+  - **Download from official source:** Only download from [GitHub releases](https://github.com/adileo/squirreldisk/releases)
+  
+  - **Temporarily disable real-time protection:** Disable it just long enough to download and verify the file
+  
+  - **Add exception:** Add SquirrelDisk to your antivirus exclusions list
+  
+  - **Verify the source:** The app is open source - you can inspect the code on GitHub before running it
+</Accordion>
+
+<Accordion title="Permission errors on certain folders">
+  **Problem:** Cannot scan system folders like Windows, Program Files, or other users' directories.
+
+  **Solution:**
+  
+  - Right-click SquirrelDisk and select "Run as administrator"
+  - Windows protects system folders - this is normal behavior
+  - Consider scanning your user directory (C:\\Users\\YourName) instead
+</Accordion>
+
+### macOS
+
+<Accordion title="'SquirrelDisk' cannot be opened because the developer cannot be verified">
+  **Problem:** Gatekeeper blocks the app from opening.
+
+  **Solution:**
+  
+  This is expected for unsigned applications on macOS.
+  
+  1. Right-click (or Control-click) the SquirrelDisk app
+  2. Select "Open" from the menu
+  3. Click "Open" in the dialog that appears (first time it won't work)
+  4. Right-click and select "Open" again
+  5. This time click "Open" and the app will launch
+  
+  You only need to do this once. Subsequent launches will work normally.
+</Accordion>
+
+<Accordion title="Full Disk Access required for some folders">
+  **Problem:** Cannot scan certain folders like Desktop, Documents, or external drives.
+
+  **Solution:**
+  
+  macOS Catalina and later require explicit permission for apps to access certain folders.
+  
+  1. Open System Preferences > Security & Privacy
+  2. Click the Privacy tab
+  3. Select "Full Disk Access" from the left sidebar
+  4. Click the lock icon to make changes
+  5. Click "+" and add SquirrelDisk
+  6. Restart SquirrelDisk
+  
+  Note: You may need to grant permission for each external drive the first time you scan it.
+</Accordion>
+
+### Linux
+
+<Accordion title="AppArmor/SELinux restrictions">
+  **Problem:** The app launches but cannot access certain directories due to AppArmor or SELinux.
+
+  **Solution:**
+  
+  - **Check audit logs:** `sudo ausearch -m avc -ts recent` (SELinux) or `sudo dmesg | grep DENIED` (AppArmor)
+  
+  - **Temporary workaround:** On Ubuntu/Debian with AppArmor:
+    ```bash
+    sudo aa-complain /path/to/squirreldisk
+    ```
+  
+  - **Run from terminal:** Launch from terminal to see permission errors: `./SquirrelDisk*.AppImage`
+  
+  - **Use .deb package:** The .deb package may have better integration with system permissions
+</Accordion>
+
+<Accordion title="Cannot execute AppImage">
+  **Problem:** Double-clicking the AppImage does nothing.
+
+  **Solution:**
+  
+  1. Open terminal in the download location
+  2. Make it executable: `chmod +x SquirrelDisk*.AppImage`
+  3. Run it: `./SquirrelDisk*.AppImage`
+  
+  Or install using the .deb package instead:
+  ```bash
+  sudo dpkg -i squirreldisk_*.deb
+  ```
+</Accordion>
+
+## Still Having Issues?
+
+If your problem isn't listed here:
+
+1. Check the [FAQ](/support/faq) for more information
+2. Search [existing issues](https://github.com/adileo/squirreldisk/issues) to see if others have reported it
+3. Join the [Discord community](https://discord.gg/Xp8QtMM65w) for help
+4. [Report a new issue](/support/reporting-bugs) with details about your problem
+
+<Note>
+  SquirrelDisk is currently in alpha (v0.3.4). Some bugs and rough edges are expected. Your bug reports help make the app better for everyone!
+</Note>

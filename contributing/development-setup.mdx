@@ -1,0 +1,365 @@
+---
+title: Development Setup
+description: Set up your local development environment for contributing to SquirrelDisk
+---
+
+# Development Setup
+
+This guide will help you set up your local development environment to start contributing to SquirrelDisk.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+<AccordionGroup>
+  <Accordion title="Node.js (v16 or higher)">
+    SquirrelDisk's frontend is built with React and Vite, which require Node.js.
+    
+    **Installation:**
+    - Download from [nodejs.org](https://nodejs.org/)
+    - Or use a version manager like [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm)
+    
+    **Verify installation:**
+    ```bash
+    node --version
+    npm --version
+    ```
+  </Accordion>
+  
+  <Accordion title="Rust (1.57 or higher)">
+    SquirrelDisk's backend is built with Rust. You'll need the Rust toolchain installed.
+    
+    **Installation:**
+    ```bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    ```
+    
+    **Verify installation:**
+    ```bash
+    rustc --version
+    cargo --version
+    ```
+    
+    Learn more at [rust-lang.org](https://www.rust-lang.org/tools/install)
+  </Accordion>
+  
+  <Accordion title="Tauri CLI">
+    Tauri is the framework that bridges Rust and React in SquirrelDisk.
+    
+    **Installation:**
+    The Tauri CLI is included in the project's dependencies and will be installed automatically with `npm install`.
+    
+    Learn more at [tauri.app](https://tauri.app/v1/guides/getting-started/prerequisites)
+  </Accordion>
+  
+  <Accordion title="Platform-Specific Dependencies">
+    <Tabs>
+      <Tab title="Windows">
+        - **Microsoft Visual Studio C++ Build Tools**: Required for Rust compilation
+        - Download from [Visual Studio downloads](https://visualstudio.microsoft.com/downloads/)
+        - Select "Desktop development with C++" during installation
+      </Tab>
+      
+      <Tab title="macOS">
+        - **Xcode Command Line Tools**: Required for development
+        ```bash
+        xcode-select --install
+        ```
+      </Tab>
+      
+      <Tab title="Linux">
+        Install required system libraries:
+        
+        **Debian/Ubuntu:**
+        ```bash
+        sudo apt update
+        sudo apt install libwebkit2gtk-4.0-dev \
+          build-essential \
+          curl \
+          wget \
+          libssl-dev \
+          libgtk-3-dev \
+          libayatana-appindicator3-dev \
+          librsvg2-dev
+        ```
+        
+        **Fedora:**
+        ```bash
+        sudo dnf install webkit2gtk3-devel \
+          openssl-devel \
+          curl \
+          wget \
+          libappindicator-gtk3 \
+          librsvg2-devel
+        sudo dnf group install "C Development Tools and Libraries"
+        ```
+        
+        **Arch Linux:**
+        ```bash
+        sudo pacman -Syu
+        sudo pacman -S webkit2gtk \
+          base-devel \
+          curl \
+          wget \
+          openssl \
+          appmenu-gtk-module \
+          gtk3 \
+          libappindicator-gtk3 \
+          librsvg
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+</AccordionGroup>
+
+## Getting Started
+
+### 1. Clone the Repository
+
+First, fork the repository on GitHub, then clone your fork:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/squirreldisk.git
+cd squirreldisk
+```
+
+Add the upstream repository as a remote:
+
+```bash
+git remote add upstream https://github.com/adileo/squirreldisk.git
+```
+
+### 2. Install Dependencies
+
+Install the Node.js dependencies:
+
+```bash
+npm install
+```
+
+This will install all required packages, including:
+- React and React DOM
+- Vite (build tool)
+- D3.js (visualization library)
+- Tauri CLI
+- TypeScript and type definitions
+- Tailwind CSS
+
+Rust dependencies are managed by Cargo and will be downloaded automatically when you first build the project.
+
+### 3. Run in Development Mode
+
+Start the development server:
+
+```bash
+npm run tauri dev
+```
+
+This command will:
+1. Start the Vite development server for the React frontend
+2. Compile the Rust backend
+3. Launch the SquirrelDisk application window
+4. Enable hot module replacement (HMR) for frontend changes
+
+<Note>
+  The first build may take several minutes as Cargo downloads and compiles all Rust dependencies.
+</Note>
+
+### 4. Making Changes
+
+<Tabs>
+  <Tab title="Frontend Changes">
+    Frontend code is located in `src/`:
+    
+    - `src/components/` - React components (DiskList, DiskDetail, TitleBar, etc.)
+    - `src/d3chart.ts` - D3.js sunburst chart implementation
+    - `src/App.tsx` - Main application component
+    - `src/main.tsx` - Application entry point
+    
+    Changes to React/TypeScript files will automatically reload with HMR.
+  </Tab>
+  
+  <Tab title="Backend Changes">
+    Backend code is located in `src-tauri/src/`:
+    
+    - `src-tauri/src/main.rs` - Tauri app setup and command handlers
+    - `src-tauri/src/scan.rs` - Disk scanning logic
+    - `src-tauri/src/window_style.rs` - Native window styling
+    
+    After changing Rust code, the app will automatically rebuild and restart.
+  </Tab>
+  
+  <Tab title="Dependencies">
+    **Frontend dependencies** in `package.json`:
+    ```bash
+    npm install <package-name>
+    ```
+    
+    **Backend dependencies** in `src-tauri/Cargo.toml`:
+    ```toml
+    [dependencies]
+    package-name = "version"
+    ```
+    Then run `cargo build` or restart `npm run tauri dev`.
+  </Tab>
+</Tabs>
+
+### 5. Building for Production
+
+Create a production build:
+
+```bash
+npm run tauri build
+```
+
+This will:
+1. Build the React frontend for production (TypeScript compilation + Vite build)
+2. Compile the Rust backend with optimizations
+3. Create platform-specific installers in `src-tauri/target/release/`:
+   - **Windows**: `.exe` and `.msi` installers
+   - **macOS**: `.dmg` and `.app` bundle
+   - **Linux**: `.deb`, `.appimage`, and other formats
+
+<Warning>
+  Production builds take significantly longer than development builds due to optimization passes.
+</Warning>
+
+## Project Structure
+
+Here's an overview of the project structure:
+
+```
+squirreldisk/
+├── src/                          # Frontend source code (React + TypeScript)
+│   ├── components/               # React components
+│   │   ├── DiskList.tsx         # Disk selection list
+│   │   ├── DiskDetail.tsx       # Disk detail view with chart
+│   │   ├── DiskItem.tsx         # Individual disk item
+│   │   ├── FileLine.tsx         # File list item
+│   │   ├── TitleBar.tsx         # Custom window title bar
+│   │   └── ParentFolder.tsx     # Parent folder navigation
+│   ├── assets/                  # Images and icons
+│   ├── d3chart.ts              # D3.js sunburst chart logic
+│   ├── pruneData.ts            # Data processing utilities
+│   ├── App.tsx                 # Main app component
+│   └── main.tsx                # Entry point
+├── src-tauri/                   # Backend source code (Rust + Tauri)
+│   ├── src/
+│   │   ├── main.rs             # Tauri setup and commands
+│   │   ├── scan.rs             # Disk scanning implementation
+│   │   └── window_style.rs     # Window styling (shadows, rounded corners)
+│   ├── Cargo.toml              # Rust dependencies
+│   ├── tauri.conf.json         # Tauri configuration
+│   └── icons/                  # Application icons
+├── public/                      # Static assets
+├── package.json                # Node.js dependencies and scripts
+├── tsconfig.json               # TypeScript configuration
+├── vite.config.ts              # Vite configuration
+├── tailwind.config.cjs         # Tailwind CSS configuration
+└── README.md                   # Project readme
+```
+
+## Common Development Tasks
+
+<AccordionGroup>
+  <Accordion title="Opening DevTools">
+    To debug the frontend, uncomment this line in `src-tauri/src/main.rs`:
+    
+    ```rust
+    window.open_devtools();
+    ```
+    
+    Then restart the app. The Chrome DevTools will open automatically.
+  </Accordion>
+  
+  <Accordion title="Viewing Rust Logs">
+    Rust logs are printed to the terminal where you ran `npm run tauri dev`.
+    
+    Add logging with:
+    ```rust
+    println!("Debug message: {:?}", variable);
+    ```
+  </Accordion>
+  
+  <Accordion title="Running Rust Tests">
+    Run Rust tests from the `src-tauri` directory:
+    
+    ```bash
+    cd src-tauri
+    cargo test
+    ```
+  </Accordion>
+  
+  <Accordion title="Checking Code Style">
+    **TypeScript/React:**
+    ```bash
+    npm run build
+    ```
+    This runs TypeScript type checking.
+    
+    **Rust:**
+    ```bash
+    cd src-tauri
+    cargo clippy
+    cargo fmt --check
+    ```
+  </Accordion>
+  
+  <Accordion title="Updating Dependencies">
+    **Frontend:**
+    ```bash
+    npm update
+    ```
+    
+    **Backend:**
+    ```bash
+    cd src-tauri
+    cargo update
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Build Fails on First Run">
+    **Solution:**
+    - Ensure all prerequisites are installed correctly
+    - On Linux, double-check that all system libraries are installed
+    - Try `cargo clean` in the `src-tauri` directory and rebuild
+    - Check the [Tauri prerequisites guide](https://tauri.app/v1/guides/getting-started/prerequisites)
+  </Accordion>
+  
+  <Accordion title="Hot Reload Not Working">
+    **Solution:**
+    - Restart the development server
+    - Check for TypeScript errors in the terminal
+    - Clear Vite cache: `rm -rf node_modules/.vite`
+  </Accordion>
+  
+  <Accordion title="Rust Compilation Errors">
+    **Solution:**
+    - Update Rust: `rustup update`
+    - Clear Cargo cache: `cargo clean` in `src-tauri/`
+    - Ensure you're using Rust 1.57 or higher
+  </Accordion>
+  
+  <Accordion title="Missing Dependencies">
+    **Solution:**
+    - Delete `node_modules` and run `npm install` again
+    - Delete `src-tauri/target` and rebuild
+    - Check that your Node.js version is compatible (v16+)
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Architecture" icon="sitemap" href="/contributing/architecture">
+    Learn about SquirrelDisk's architecture and how components interact
+  </Card>
+  
+  <Card title="Find Issues" icon="list-check" href="https://github.com/adileo/squirreldisk/issues">
+    Browse open issues and find something to work on
+  </Card>
+</CardGroup>

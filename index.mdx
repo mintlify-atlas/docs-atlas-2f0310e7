@@ -1,97 +1,186 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "SquirrelDisk Documentation"
+description: "Beautiful, cross-platform disk usage analyzer built with Rust and React"
+mode: "custom"
 ---
 
-## Setting up
+<div className="relative py-20 overflow-hidden dark:bg-[#0B1226] bg-gradient-to-b from-gray-50 to-white">
+  <div className="absolute inset-0 dark:bg-[radial-gradient(circle_at_30%_50%,rgba(91,85,201,0.1),transparent_50%)] bg-[radial-gradient(circle_at_30%_50%,rgba(203,133,71,0.05),transparent_50%)]"></div>
+  <div className="relative max-w-6xl mx-auto px-6">
+    <div className="grid lg:grid-cols-12 gap-8 items-center">
+      <div className="lg:col-span-7">
+        <h1 className="text-5xl lg:text-6xl font-bold dark:text-white text-gray-900 mb-6">
+          Reclaim Your Disk Space
+        </h1>
+        <p className="text-lg lg:text-xl dark:text-gray-300 text-gray-600 mb-8 max-w-2xl">
+          SquirrelDisk is a lightning-fast, open source disk usage analyzer. Visualize what's taking up space with beautiful sunburst charts and clean up your drives with drag-and-drop simplicity.
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <a 
+            href="/quickstart" 
+            className="inline-flex items-center px-6 py-3 rounded-lg font-semibold text-white transition-all hover:opacity-90 no-underline"
+            style={{ backgroundColor: '#cb8547' }}
+          >
+            Get Started
+            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a 
+            href="/introduction" 
+            className="inline-flex items-center px-6 py-3 rounded-lg font-semibold dark:text-white text-gray-900 dark:bg-white/10 bg-gray-100 dark:border-white/20 border border-gray-300 transition-all hover:dark:bg-white/20 hover:bg-gray-200 no-underline"
+          >
+            Learn More
+          </a>
+        </div>
+      </div>
+      <div className="lg:col-span-5 hidden lg:flex justify-center">
+        <img 
+          src="https://media.brand.dev/a2a8fc64-7f7f-48c7-9f37-8ecf148ab3ca.png" 
+          alt="SquirrelDisk icon"
+          className="w-64 h-64 object-contain"
+          noZoom
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
-Get your documentation site up and running in minutes.
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-3xl font-bold dark:text-white text-gray-900 mb-4">Quick Start</h2>
+  <p className="text-base dark:text-gray-400 text-gray-600 mb-8">Get up and running with SquirrelDisk in minutes</p>
+  
+  <Steps>
+    <Step title="Download SquirrelDisk">
+      Visit the [releases page](https://github.com/adileo/squirreldisk/releases) and download the installer for your operating system:
+      - **Windows**: `.exe` installer
+      - **macOS**: `.dmg` disk image
+      - **Linux**: `.deb` package (Ubuntu/Debian)
+      
+      <Note>The binaries are not code-signed. You may need to bypass security warnings on first launch.</Note>
+    </Step>
+    
+    <Step title="Install and Launch">
+      Run the installer and open SquirrelDisk. On **macOS**, right-click and select **Open** twice to bypass Gatekeeper. On **Windows**, click "More Information" then "Run Anyway" if Windows Defender appears.
+    </Step>
+    
+    <Step title="Scan Your Disk">
+      Select a disk or folder from the main screen and click **Scan**. SquirrelDisk uses parallel scanning powered by Rust to analyze your disk in seconds.
+      
+      Watch the progress bar as SquirrelDisk traverses your file system and builds a complete map of disk usage.
+    </Step>
+    
+    <Step title="Explore and Clean Up">
+      Navigate the interactive sunburst chart to explore what's taking up space. Drag files and folders to the deletion area to clean up your disk — it's that simple.
+    </Step>
+  </Steps>
+</div>
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-3xl font-bold dark:text-white text-gray-900 mb-4">Explore by Topic</h2>
+  <p className="text-base dark:text-gray-400 text-gray-600 mb-8">Everything you need to master SquirrelDisk</p>
+  
+  <CardGroup cols={2}>
+    <Card title="Installation Guides" icon="download" href="/installation/windows">
+      Step-by-step instructions for Windows, macOS, and Linux
+    </Card>
+    <Card title="User Guide" icon="book-open" href="/guide/scanning-disks">
+      Learn how to scan, navigate, and manage your disk space
+    </Card>
+    <Card title="Sunburst Visualization" icon="chart-pie" href="/features/sunburst-visualization">
+      Understand the interactive D3.js chart and how to use it
+    </Card>
+    <Card title="File Management" icon="trash" href="/features/file-management">
+      Drag-and-drop deletion and file explorer integration
+    </Card>
+    <Card title="Performance" icon="gauge-high" href="/features/performance">
+      How SquirrelDisk achieves lightning-fast scan speeds
+    </Card>
+    <Card title="Auto-Updater" icon="arrows-rotate" href="/features/auto-updater">
+      Stay up to date with automatic updates
+    </Card>
+  </CardGroup>
+</div>
 
-## Make it yours
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-3xl font-bold dark:text-white text-gray-900 mb-4">Key Features</h2>
+  <p className="text-base dark:text-gray-400 text-gray-600 mb-8">What makes SquirrelDisk special</p>
+  
+  <div className="grid md:grid-cols-2 gap-6">
+    <div className="dark:bg-[#1a1d27] bg-gray-50 p-6 rounded-xl dark:border-[#27272a] border border-gray-200">
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(203, 133, 71, 0.1)' }}>
+        <svg className="w-6 h-6" style={{ color: '#cb8547' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </div>
+      <h3 className="text-lg font-semibold dark:text-white text-gray-900 mb-2">Lightning Fast</h3>
+      <p className="dark:text-gray-400 text-gray-600 text-sm">Built with Rust for parallel disk scanning. Analyze gigabytes of data in seconds.</p>
+    </div>
+    
+    <div className="dark:bg-[#1a1d27] bg-gray-50 p-6 rounded-xl dark:border-[#27272a] border border-gray-200">
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(203, 133, 71, 0.1)' }}>
+        <svg className="w-6 h-6" style={{ color: '#cb8547' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      </div>
+      <h3 className="text-lg font-semibold dark:text-white text-gray-900 mb-2">Beautiful Visualization</h3>
+      <p className="dark:text-gray-400 text-gray-600 text-sm">Interactive sunburst charts powered by D3.js make it easy to see what's using space.</p>
+    </div>
+    
+    <div className="dark:bg-[#1a1d27] bg-gray-50 p-6 rounded-xl dark:border-[#27272a] border border-gray-200">
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(203, 133, 71, 0.1)' }}>
+        <svg className="w-6 h-6" style={{ color: '#cb8547' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <h3 className="text-lg font-semibold dark:text-white text-gray-900 mb-2">Drag-and-Drop Deletion</h3>
+      <p className="dark:text-gray-400 text-gray-600 text-sm">Collect files and folders to delete with intuitive drag-and-drop, then clean up with one click.</p>
+    </div>
+    
+    <div className="dark:bg-[#1a1d27] bg-gray-50 p-6 rounded-xl dark:border-[#27272a] border border-gray-200">
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(203, 133, 71, 0.1)' }}>
+        <svg className="w-6 h-6" style={{ color: '#cb8547' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h3 className="text-lg font-semibold dark:text-white text-gray-900 mb-2">Cross-Platform</h3>
+      <p className="dark:text-gray-400 text-gray-600 text-sm">Works seamlessly on Windows, macOS, and Linux with native performance.</p>
+    </div>
+  </div>
+</div>
 
-Design a docs site that looks great and empowers your users.
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-3xl font-bold dark:text-white text-gray-900 mb-4">Community & Support</h2>
+  <p className="text-base dark:text-gray-400 text-gray-600 mb-8">Get help and contribute to SquirrelDisk</p>
+  
+  <CardGroup cols={3}>
+    <Card title="Report Bugs" icon="bug" href="/support/reporting-bugs">
+      Found an issue? Let us know on GitHub
+    </Card>
+    <Card title="Join Discord" icon="discord" href="https://discord.gg/Xp8QtMM65w">
+      Chat with the community and get support
+    </Card>
+    <Card title="Contributing" icon="code-branch" href="/contributing/overview">
+      Help make SquirrelDisk better
+    </Card>
+  </CardGroup>
+</div>
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<div className="mt-20 mb-16 max-w-5xl mx-auto px-6">
+  <div className="dark:bg-[#1a1d27] bg-gray-50 rounded-2xl p-8 md:p-12 dark:border-[#27272a] border border-gray-200 text-center">
+    <h2 className="text-3xl font-bold dark:text-white text-gray-900 mb-4">Ready to Free Up Space?</h2>
+    <p className="text-lg dark:text-gray-300 text-gray-600 mb-8 max-w-2xl mx-auto">
+      Download SquirrelDisk today and take control of your disk space with the fastest, most intuitive disk analyzer available.
+    </p>
+    <a 
+      href="/quickstart" 
+      className="inline-flex items-center px-8 py-4 rounded-lg font-semibold text-white text-lg transition-all hover:opacity-90 no-underline"
+      style={{ backgroundColor: '#cb8547' }}
+    >
+      Get Started Now
+      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
+  </div>
+</div>

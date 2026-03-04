@@ -1,0 +1,107 @@
+---
+title: Installing on macOS
+description: Step-by-step guide to install SquirrelDisk on macOS
+---
+
+<Warning>
+  The SquirrelDisk binary is not code-signed with an Apple Developer certificate. macOS Gatekeeper will prevent the app from opening on first launch. Follow the steps below to bypass this security warning.
+</Warning>
+
+## Download
+
+Download the latest macOS disk image (`.dmg`) from the [GitHub releases page](https://github.com/adileo/squirreldisk/releases).
+
+## Installation Steps
+
+<Steps>
+  <Step title="Open the DMG File">
+    Double-click the downloaded `.dmg` file to mount the disk image. A Finder window will open showing the SquirrelDisk application.
+  </Step>
+
+  <Step title="Install the Application">
+    Drag the **SquirrelDisk** icon to your **Applications** folder to install it.
+  </Step>
+
+  <Step title="Bypass Gatekeeper (First Launch)">
+    Because the app is not signed with an Apple Developer certificate, you need to bypass Gatekeeper:
+    
+    1. **Right-click** (or Control-click) on the SquirrelDisk app in your Applications folder
+    2. Select **"Open"** from the context menu
+    3. A warning dialog will appear - click **"Cancel"** or it will close automatically
+    4. **Right-click** on SquirrelDisk again and select **"Open"** a second time
+    5. Now you'll see an **"Open"** button in the warning dialog - click it to launch the app
+    
+    <Info>
+      You only need to do this process once. After the first successful launch, you can open SquirrelDisk normally by double-clicking.
+    </Info>
+  </Step>
+
+  <Step title="Grant Permissions">
+    When you first launch SquirrelDisk, macOS will ask for permissions:
+    
+    - **Full Disk Access**: Required to scan all directories on your system
+    - Grant the requested permissions in System Preferences when prompted
+  </Step>
+</Steps>
+
+## System Requirements
+
+- macOS 10.13 (High Sierra) or later
+- 64-bit Intel or Apple Silicon (M1/M2) processor
+- Minimum 2GB RAM recommended
+
+## Troubleshooting
+
+### Alternative Method to Bypass Gatekeeper
+
+If the right-click method doesn't work, you can use the command line:
+
+```bash
+xattr -cr /Applications/SquirrelDisk.app
+```
+
+Then try opening the app normally.
+
+### "SquirrelDisk is damaged and can't be opened"
+
+This error can occur due to Gatekeeper quarantine attributes. Remove them with:
+
+```bash
+xattr -d com.apple.quarantine /Applications/SquirrelDisk.app
+```
+
+### App Can't Access Certain Folders
+
+If SquirrelDisk can't scan some directories:
+
+1. Open **System Preferences** > **Security & Privacy**
+2. Go to the **Privacy** tab
+3. Select **Full Disk Access** from the left sidebar
+4. Click the lock icon to make changes (requires admin password)
+5. Click the **+** button and add SquirrelDisk from your Applications folder
+6. Restart SquirrelDisk
+
+### App Crashes on Launch
+
+- Check that your macOS version meets the minimum requirements
+- Try removing the app and reinstalling from a fresh download
+- Check Console.app for crash logs related to SquirrelDisk
+- Report the issue on the [GitHub issue page](https://github.com/adileo/squirreldisk/issues) with crash logs
+
+### Apple Silicon (M1/M2) Issues
+
+SquirrelDisk should run natively on Apple Silicon. If you encounter issues:
+
+- Ensure you downloaded the correct version for your architecture
+- Try running with Rosetta 2 if the native version has issues:
+  1. Right-click SquirrelDisk in Applications
+  2. Select "Get Info"
+  3. Check "Open using Rosetta"
+
+## Updates
+
+<Info>
+  SquirrelDisk includes an auto-updater that checks for new versions when you launch the app. You'll be notified when updates are available.
+</Info>
+
+When an update is available, you'll see a notification dialog. The app will download and install the update automatically.

@@ -1,0 +1,83 @@
+---
+title: Installing on Windows
+description: Step-by-step guide to install SquirrelDisk on Windows
+---
+
+<Warning>
+  The SquirrelDisk binary is not code-signed. Windows Defender will display a security warning when you first run the installer. This is normal for unsigned applications.
+</Warning>
+
+## Download
+
+Download the latest Windows installer (`.exe`) from the [GitHub releases page](https://github.com/adileo/squirreldisk/releases).
+
+## Installation Steps
+
+<Steps>
+  <Step title="Run the Installer">
+    Double-click the downloaded `.exe` file to start the installation process.
+  </Step>
+
+  <Step title="Bypass Windows Defender SmartScreen">
+    When Windows Defender SmartScreen blocks the installer, you'll see a warning dialog:
+    
+    1. Click **"More Information"** in the SmartScreen dialog
+    2. Click **"Run Anyway"** to proceed with the installation
+    
+    <Info>
+      This warning appears because the application is not code-signed with a Microsoft-trusted certificate. Code signing certificates are expensive for open-source projects. [Learn more about why binaries aren't signed](https://news.ycombinator.com/item?id=19330062).
+    </Info>
+  </Step>
+
+  <Step title="Complete Installation">
+    Follow the on-screen prompts to complete the installation. SquirrelDisk will be installed to your system and added to your Start Menu.
+  </Step>
+
+  <Step title="Launch SquirrelDisk">
+    After installation, you can launch SquirrelDisk from the Start Menu or desktop shortcut.
+  </Step>
+</Steps>
+
+## System Requirements
+
+- Windows 7 or later
+- 64-bit processor
+- Minimum 2GB RAM recommended
+
+## Troubleshooting
+
+### Windows Defender Keeps Blocking the App
+
+If Windows Defender continues to block the application after installation:
+
+1. Open **Windows Security** from the Start Menu
+2. Go to **Virus & threat protection** > **Protection history**
+3. Find the SquirrelDisk entry and select **Allow on device**
+
+Alternatively, add an exclusion:
+
+1. Open **Windows Security** > **Virus & threat protection**
+2. Click **Manage settings** under "Virus & threat protection settings"
+3. Scroll to **Exclusions** and click **Add or remove exclusions**
+4. Add the SquirrelDisk installation folder
+
+### Installation Fails or Hangs
+
+- Make sure you have administrator privileges
+- Close any antivirus software temporarily during installation
+- Try running the installer as administrator (right-click > "Run as administrator")
+
+### App Won't Start After Installation
+
+- Verify that your system meets the minimum requirements
+- Check Windows Event Viewer for error messages
+- Try reinstalling the application
+- Report the issue on the [GitHub issue page](https://github.com/adileo/squirreldisk/issues)
+
+## Updates
+
+<Info>
+  SquirrelDisk includes an auto-updater that checks for new versions when you launch the app. You'll be notified when updates are available.
+</Info>
+
+When an update is available, you'll see a notification dialog. Click to download and install the latest version.

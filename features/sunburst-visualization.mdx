@@ -1,0 +1,188 @@
+---
+title: "Sunburst Visualization"
+description: "Interactive D3.js sunburst chart for visualizing disk usage"
+---
+
+SquirrelDisk uses an interactive sunburst chart to help you visualize and explore your disk usage. The sunburst visualization makes it easy to understand where your storage space is being consumed at a glance.
+
+## What is a Sunburst Chart?
+
+A sunburst chart is a multi-level radial visualization that represents hierarchical data. In SquirrelDisk, each ring represents a level in your directory structure:
+
+- **Center circle**: Navigate back to the parent directory
+- **Inner rings**: Top-level folders
+- **Outer rings**: Nested subdirectories (up to 3 levels deep)
+
+The size of each arc is proportional to the space it occupies on your disk, making it easy to identify large files and folders.
+
+<Info>
+Sunburst charts are particularly effective for disk analysis because they allow you to see the entire hierarchy and relative sizes at once, unlike traditional tree views.
+</Info>
+
+## D3.js Implementation
+
+SquirrelDisk leverages D3.js for high-performance rendering and smooth animations. The chart is built using D3's partition layout and arc generators:
+
+```typescript
+var arc = d3
+  .arc<D3HierarchyDiskItemArc>()
+  .startAngle((d) => d.x0)
+  .endAngle((d) => d.x1)
+  .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
+  .padRadius(radius * 1.5)
+  .innerRadius((d) => d.y0 * radius)
+  .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 3));
+```
+
+The chart automatically handles data updates and provides smooth transitions when zooming in and out of directories.
+
+## Interactive Features
+
+### Click to Zoom
+
+Click any directory arc to zoom into that folder. The chart smoothly animates to focus on your selection, showing its contents in detail. Click the center circle to navigate back to the parent directory.
+
+```typescript
+function arcClickHandler(event: any, focusedNode: D3HierarchyDiskItem) {
+  if (!focusedNode.children) {
+    return; // Files cannot be zoomed into
+  }
+  current = focusedNode;
+  arcClicked(event, focusedNode);
+  path = updateData(root, focusedNode, innerG, arcClickHandler, arcHoverHandler);
+  animateToTarget(g, path);
+}
+```
+
+<Tip>
+Double-click is not required - a single click zooms into any directory. This makes navigation faster and more intuitive.
+</Tip>
+
+### Hover for Details
+
+Hover over any arc to see detailed information:
+- Full path from root to the item
+- Exact size in GB
+- The corresponding item is highlighted in the sidebar
+
+```typescript
+xx.append("title").text(
+  (d) =>
+    `${d
+      .ancestors()
+      .map((d) => d.data.name)
+      .reverse()
+      .join("/")}\n${((d.data.data || 0) / mul / mul / mul).toFixed(2)} GB`
+);
+```
+
+### Synchronized Sidebar
+
+The file list sidebar stays in sync with the sunburst chart. When you hover over an item in either view, both are highlighted. Click an item in the sidebar to zoom the chart or open the file in your system's file explorer.
+
+## Color Coding
+
+Colors are assigned based on the top-level parent folder and become darker with increasing depth:
+
+```typescript
+const depthmap: any = {
+  0: 0,
+  1: -0.2,
+  2: -0.35,
+  3: -0.45,
+  4: -0.55,
+  5: -0.6,
+};
+```
+
+This depth-based shading helps you quickly identify hierarchy levels. Colors are generated using D3's rainbow interpolation for maximum visual distinction:
+
+```typescript
+gcolor = d3.scaleOrdinal(
+  d3.quantize(d3.interpolateRainbow, colorCounter + 2)
+);
+```
+
+<Note>
+The color scheme is automatically generated based on the number of top-level folders, ensuring each major section has a distinct color.
+</Note>
+
+## Smaller Items Aggregation
+
+To keep the visualization clean and performant, SquirrelDisk automatically groups smaller items. Items that occupy less than 0.5% of the current view are aggregated into a "Smaller Items" arc:
+
+```typescript
+if ((item.value || 0) / overallSize > 0.005) {
+  // Include large items
+  filtered.push(item);
+} else {
+  // Accumulate small items
+  if (accumulator) {
+    accumulator.data.value! += item.value ?? 0;
+  } else {
+    let v: DiskItem = {
+      id: uuidv4(),
+      isDirectory: false,
+      name: "Smaller Items",
+      value: item.value || 0,
+      data: item.value || 0,
+      children: [],
+    };
+    accumulator = d3.hierarchy(v) as D3HierarchyDiskItem;
+  }
+}
+```
+
+This aggregation:
+- Reduces visual clutter
+- Improves rendering performance
+- Focuses attention on the largest space consumers
+- Still preserves the total space accounting
+
+<Tip>
+If you need to see smaller items, zoom into their parent directory. The 0.5% threshold recalculates based on the current view.
+</Tip>
+
+## Arc Visibility Rules
+
+The chart enforces visibility rules to maintain clarity:
+
+```typescript
+const arcVisible = (d: D3HierarchyDiskItemArc) => {
+  // d.y1 <= 4 => Hide arcs with outer radius larger than 4
+  // d.y0 >= 1 => Hide root arc (spot in the middle)
+  // d.x1 > d.x0 => hide non focused arcs
+  return d.y1 <= 4 && d.y0 >= 1 && d.x1 > d.x0;
+};
+```
+
+These rules:
+- Limit depth to 3 levels from the current focus
+- Hide the root center spot (reserved for navigation)
+- Hide arcs that are too small to render properly
+- Dynamically adjust during zoom animations
+
+## Smooth Animations
+
+All chart transitions use smooth 750ms animations:
+
+```typescript
+const t = g.transition().duration(750) as any;
+
+path
+  .transition(t)
+  .tween("data", (d) => {
+    const i = d3.interpolate(d.current, d.target);
+    return (t) => (d.current = i(t));
+  })
+  .attr("fill-opacity", (d: any) =>
+    arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0
+  )
+  .attrTween("d", (d) => () => arc(d.current)!);
+```
+
+The animations use D3's interpolation to smoothly transition between states, making navigation feel fluid and natural.
+
+<Note>
+Directories have 0.6 opacity while files have 0.4 opacity, providing a subtle visual distinction between them.
+</Note>

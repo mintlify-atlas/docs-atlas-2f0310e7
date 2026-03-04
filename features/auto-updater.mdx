@@ -1,0 +1,276 @@
+---
+title: "Auto-Updater"
+description: "Automatic updates using Tauri's built-in updater system"
+---
+
+SquirrelDisk includes an automatic updater that keeps your application up-to-date with the latest features and bug fixes.
+
+## Tauri's Built-in Updater
+
+SquirrelDisk uses Tauri's built-in updater feature, which provides:
+
+- **Secure updates** with cryptographic signature verification
+- **Cross-platform support** (Windows, macOS, Linux)
+- **Background checks** that don't interrupt your workflow
+- **User-controlled installation** with confirmation dialogs
+
+Configuration in `tauri.conf.json`:
+
+```json
+"updater": {
+  "active": true,
+  "endpoints": [
+    "https://www.squirreldisk.com/api/updates/{{target}}/{{current_version}}"
+  ],
+  "dialog": true,
+  "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDk3QjIwNUJBRkM0MDE0OTUKUldTVkZFRDh1Z1d5bHdSbS85UmovVUdiOHk1dy9zTnZzb2xtb0ppbGIzS3E3NUdHUnB1QldjRVAK"
+}
+```
+
+<Note>
+Tauri requires the `updater` feature to be enabled in `Cargo.toml`: `tauri = { version = "1.2", features = ["updater"] }`
+</Note>
+
+## Update Checks on Launch
+
+SquirrelDisk checks for updates automatically when you launch the application. This ensures you're always notified of new versions without being intrusive.
+
+### No Spam Policy
+
+Update checks are designed to be unobtrusive:
+
+- **Once per launch**: Checks only happen when you start the app
+- **No background polling**: No continuous checking while running
+- **Optional installation**: You choose when to install updates
+- **Skip versions**: You can skip updates if desired
+
+<Info>
+If an update is available, you'll see a dialog with release notes. You can install it immediately or continue using the current version.
+</Info>
+
+## Update Endpoint
+
+SquirrelDisk queries the update endpoint with platform-specific information:
+
+```
+https://www.squirreldisk.com/api/updates/{{target}}/{{current_version}}
+```
+
+### Template Variables
+
+- `{{target}}`: Platform identifier (e.g., `darwin-x86_64`, `windows-x86_64`, `linux-x86_64`)
+- `{{current_version}}`: Currently installed version (e.g., `0.3.4`)
+
+### Example Request
+
+For version 0.3.4 on macOS:
+
+```
+GET https://www.squirreldisk.com/api/updates/darwin-x86_64/0.3.4
+```
+
+### Response Format
+
+The server responds with update information in JSON format:
+
+```json
+{
+  "version": "0.4.0",
+  "date": "2024-03-15",
+  "notes": "- Added new features\n- Fixed bugs\n- Improved performance",
+  "platforms": {
+    "darwin-x86_64": {
+      "url": "https://releases.squirreldisk.com/v0.4.0/SquirrelDisk_0.4.0_x64.dmg",
+      "signature": "..."
+    },
+    "windows-x86_64": {
+      "url": "https://releases.squirreldisk.com/v0.4.0/SquirrelDisk_0.4.0_x64.msi",
+      "signature": "..."
+    },
+    "linux-x86_64": {
+      "url": "https://releases.squirreldisk.com/v0.4.0/SquirrelDisk_0.4.0_amd64.AppImage",
+      "signature": "..."
+    }
+  }
+}
+```
+
+<Tip>
+The server can return different binaries for different platforms, ensuring each user gets the correct installer.
+</Tip>
+
+## How to Install Updates
+
+When an update is available:
+
+1. **Dialog appears** showing the new version and release notes
+2. **Review changes** to see what's new
+3. **Click "Install"** to download and install the update
+4. **Application restarts** with the new version
+
+Or:
+
+1. **Click "Skip"** to continue with the current version
+2. You'll be notified again on next launch (if still outdated)
+
+### Update Dialog
+
+The dialog is configured in `tauri.conf.json`:
+
+```json
+"dialog": true
+```
+
+This enables the built-in update dialog that displays:
+- Current version
+- New version available
+- Release notes/changelog
+- Install and Skip buttons
+
+<Note>
+Setting `"dialog": false` would disable the UI and require you to implement custom update handling.
+</Note>
+
+## Version Checking
+
+SquirrelDisk follows semantic versioning (semver):
+
+```json
+"package": {
+  "productName": "SquirrelDisk",
+  "version": "0.3.4"
+}
+```
+
+Version format: `MAJOR.MINOR.PATCH`
+
+- **MAJOR**: Breaking changes
+- **MINOR**: New features (backward compatible)
+- **PATCH**: Bug fixes
+
+### Update Priority
+
+- **Patch updates** (0.3.4 → 0.3.5): Recommended to install
+- **Minor updates** (0.3.4 → 0.4.0): New features available
+- **Major updates** (0.3.4 → 1.0.0): May require migration or have breaking changes
+
+<Info>
+SquirrelDisk always notifies you of available updates, regardless of version jump, so you can decide what to install.
+</Info>
+
+## Cryptographic Signatures
+
+All updates are cryptographically signed for security:
+
+```json
+"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDk3QjIwNUJBRkM0MDE0OTUKUldTVkZFRDh1Z1d5bHdSbS85UmovVUdiOHk1dy9zTnZzb2xtb0ppbGIzS3E3NUdHUnB1QldjRVAK"
+```
+
+This public key is used to verify that:
+
+1. **Updates are authentic**: They come from the official SquirrelDisk developers
+2. **No tampering**: The binary hasn't been modified
+3. **Secure delivery**: Man-in-the-middle attacks are prevented
+
+### How Signature Verification Works
+
+1. Server signs updates with a private key
+2. Client verifies signatures using the embedded public key
+3. Only properly signed updates can be installed
+4. Invalid signatures are rejected automatically
+
+<Note>
+Signature verification happens automatically - you don't need to do anything. Invalid updates will be rejected silently.
+</Note>
+
+## Platform-Specific Installation
+
+### Windows
+
+- Downloads `.msi` installer
+- Runs installer with elevated permissions
+- Replaces existing installation
+- Preserves user settings and data
+
+### macOS
+
+- Downloads `.dmg` or `.app.tar.gz`
+- Mounts disk image (for DMG)
+- Replaces app in `/Applications`
+- Preserves app data in `~/Library/Application Support`
+
+### Linux
+
+- Downloads `.AppImage`, `.deb`, or `.rpm` depending on distribution
+- AppImage: Self-contained, replace existing file
+- Deb/RPM: Uses package manager for installation
+- Preserves settings in `~/.config/squirreldisk`
+
+<Tip>
+AppImage updates are the simplest - just replace the old file with the new one. No installation required.
+</Tip>
+
+## Update Download
+
+Updates are downloaded in the background:
+
+- **Progress indication**: Shows download progress
+- **Cancellable**: Can cancel download if needed
+- **Resumable**: Interrupted downloads can resume
+- **Verified**: Checksum verification after download
+
+## Troubleshooting Updates
+
+### Update Check Fails
+
+If the update check fails:
+
+1. **Check internet connection**: Ensure you're online
+2. **Firewall settings**: Make sure SquirrelDisk can access the update server
+3. **Proxy configuration**: Configure proxy if needed
+4. **Try later**: Server might be temporarily unavailable
+
+### Installation Fails
+
+ If update installation fails:
+
+1. **Check permissions**: Ensure you have admin/root access
+2. **Close application**: Make sure all instances are closed
+3. **Disk space**: Verify sufficient free space
+4. **Manual download**: Download from website as fallback
+
+### Signature Verification Error
+
+If you see a signature error:
+
+1. **Don't install**: The update might be compromised
+2. **Report issue**: Contact support or file a GitHub issue
+3. **Manual verification**: Download from official website instead
+
+<Note>
+Never bypass signature verification. If an update fails signature checks, it's not safe to install.
+</Note>
+
+## Disabling Auto-Updates
+
+While not recommended, you can disable auto-updates by:
+
+1. Building from source with updater disabled
+2. Blocking network access to update endpoints
+3. Using an older version without the updater feature
+
+<Info>
+Keeping SquirrelDisk updated ensures you have the latest features, performance improvements, and security fixes.
+</Info>
+
+## Release Channels
+
+Currently, SquirrelDisk uses a single stable release channel. Future versions may include:
+
+- **Stable**: Tested releases (current default)
+- **Beta**: Early access to new features
+- **Nightly**: Cutting-edge daily builds
+
+<Tip>
+Follow the official SquirrelDisk blog or GitHub releases page to stay informed about upcoming features and release schedules.
+</Tip>

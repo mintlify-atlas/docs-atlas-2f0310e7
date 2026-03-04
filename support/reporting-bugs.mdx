@@ -1,0 +1,220 @@
+---
+title: 'Reporting Bugs'
+description: 'How to report bugs and issues with SquirrelDisk'
+---
+
+## Before You Report
+
+<Note>
+  SquirrelDisk is currently in alpha (version 0.3.4). The developer acknowledges that bugs exist and the code needs refactoring. Your bug reports are essential for improving the app!
+</Note>
+
+### Check Existing Issues
+
+Before creating a new bug report, please:
+
+1. Search [existing issues](https://github.com/adileo/squirreldisk/issues) to see if someone has already reported it
+2. Check [closed issues](https://github.com/adileo/squirreldisk/issues?q=is%3Aissue+is%3Aclosed) - it might be fixed in a newer version
+3. Review the [Troubleshooting guide](/support/troubleshooting) for common issues and solutions
+4. Check the [FAQ](/support/faq) for clarification on expected behavior
+
+If you find an existing issue that matches your problem, add a 👍 reaction or comment with additional details rather than creating a duplicate.
+
+## Where to Report
+
+Report bugs on the official GitHub repository:
+
+**[github.com/adileo/squirreldisk/issues](https://github.com/adileo/squirreldisk/issues)**
+
+<Tip>
+  You can also discuss issues informally on [Discord](https://discord.gg/Xp8QtMM65w) before filing a formal bug report. The community might have quick workarounds or help you clarify the issue.
+</Tip>
+
+## What to Include
+
+A good bug report helps the developer understand and fix the issue quickly. Include the following information:
+
+### 1. System Information
+
+**Operating System:**
+- Windows: Include version (e.g., "Windows 11 22H2" or "Windows 10 21H2")
+- macOS: Include version (e.g., "macOS Ventura 13.4" or "macOS Monterey 12.6")
+- Linux: Include distribution and version (e.g., "Ubuntu 22.04 LTS" or "Fedora 38")
+
+**SquirrelDisk Version:**
+- Find this in the app's about section or download filename
+- Current version: 0.3.4
+- Specify if you built from source
+
+### 2. Steps to Reproduce
+
+Provide clear, step-by-step instructions to reproduce the bug:
+
+**Good example:**
+```
+1. Launch SquirrelDisk
+2. Select external USB drive "My Backup Drive"
+3. Click "Start Scan"
+4. Wait for scan to reach approximately 50%
+5. App crashes with no error message
+```
+
+**Bad example:**
+```
+The app crashed when I tried to scan my drive.
+```
+
+<Tip>
+  Be as specific as possible. Include folder names, file types, and disk sizes if relevant.
+</Tip>
+
+### 3. Expected vs. Actual Behavior
+
+**Expected behavior:** What you thought should happen
+```
+The scan should complete and display a sunburst chart of disk usage.
+```
+
+**Actual behavior:** What actually happened
+```
+The app froze at 50% progress and crashed after 30 seconds.
+No error dialog appeared.
+```
+
+### 4. Screenshots or Screen Recordings
+
+Visual evidence is extremely helpful:
+
+- Screenshot of error messages or dialogs
+- Screenshot showing unexpected behavior
+- Screen recording of the bug occurring (use Loom, OBS, or built-in screen recording)
+- Screenshot of the scan progress when it gets stuck
+
+<Note>
+  Be careful not to expose sensitive file or folder names in screenshots. You can blur or redact private information.
+</Note>
+
+### 5. Console Errors or Logs
+
+If applicable, include console output:
+
+**On Linux:**
+Run SquirrelDisk from terminal and copy any error messages:
+```bash
+./SquirrelDisk*.AppImage
+```
+
+**On macOS:**
+Open Console.app and filter for "SquirrelDisk" to see crash logs.
+
+**On Windows:**
+Check Event Viewer under "Windows Logs" > "Application" for SquirrelDisk errors.
+
+### 6. Additional Context
+
+Any other relevant information:
+
+- Were you scanning a particularly large directory? How large?
+- Did it work before? When did it start failing?
+- Are you using any special file systems? (NTFS, APFS, ext4, ZFS, etc.)
+- Are you scanning network drives or external storage?
+- Did you recently update your OS?
+- Are you running any antivirus or security software?
+
+## Example Bug Report
+
+Here's a complete example of a well-formatted bug report:
+
+---
+
+**Title:** App crashes when scanning external drive on macOS
+
+**Description:**
+
+SquirrelDisk crashes consistently when attempting to scan my external USB drive on macOS Ventura.
+
+**System Information:**
+- OS: macOS Ventura 13.4
+- SquirrelDisk version: 0.3.4 (downloaded from GitHub releases)
+- External drive: 2TB USB 3.0 drive formatted as APFS
+
+**Steps to Reproduce:**
+1. Launch SquirrelDisk
+2. Grant Full Disk Access in System Preferences
+3. Connect external USB drive "Time Machine Backup"
+4. Wait for drive to appear in SquirrelDisk drive list
+5. Click on the external drive
+6. Click "Start Scan"
+7. App crashes within 3-5 seconds
+
+**Expected Behavior:**
+The scan should proceed and display disk usage for the external drive.
+
+**Actual Behavior:**
+The app crashes immediately after starting the scan. No error dialog appears. The app simply closes.
+
+**Screenshots:**
+[Screenshot of drive list showing external drive]
+[Console.app screenshot showing crash log]
+
+**Console Errors:**
+```
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: ...
+```
+
+**Additional Context:**
+- The same drive scans successfully in DaisyDisk
+- Scanning internal Macintosh HD works fine
+- The drive contains approximately 1.5TB of data
+- This happens consistently every time I try
+
+---
+
+## What Happens Next
+
+After you submit a bug report:
+
+1. **The community might respond:** Other users or contributors may provide workarounds or ask clarifying questions
+
+2. **The developer reviews it:** The maintainer will assess the bug and prioritize it
+
+3. **Status updates:** The issue may be labeled (e.g., "bug", "enhancement", "help wanted")
+
+4. **Fix and release:** Once fixed, the issue will be closed and the fix included in the next release
+
+<Tip>
+  Be patient! SquirrelDisk is maintained by a small team in their spare time. Complex bugs may take time to fix.
+</Tip>
+
+## Feature Requests
+
+If you want to suggest a new feature rather than report a bug:
+
+- Use [GitHub Discussions](https://github.com/adileo/squirreldisk/discussions) for feature ideas
+- You can also create a feature request issue on the [issue page](https://github.com/adileo/squirreldisk/issues)
+- Join [Discord](https://discord.gg/Xp8QtMM65w) to discuss ideas with the community first
+
+## Be Respectful
+
+SquirrelDisk is free, open source software built by volunteers. When reporting bugs:
+
+- ✅ Be clear and constructive
+- ✅ Provide detailed information
+- ✅ Thank maintainers for their time
+- ✅ Offer to help test fixes
+- ❌ Don't be demanding or entitled
+- ❌ Don't insult the code or developers
+- ❌ Don't spam or bump issues repeatedly
+
+Remember: The developer has acknowledged the code needs work and is actively accepting contributions. Your constructive feedback helps make SquirrelDisk better for everyone!
+
+## Contributing Fixes
+
+If you're a developer and can fix the bug yourself:
+
+1. Fork the repository
+2. Create a branch for your fix
+3. Submit a pull request referencing the issue
+4. Join the [Discord](https://discord.gg/Xp8QtMM65w) to coordinate with other contributors
+
+See the [FAQ](/support/faq#how-can-i-contribute-to-squirreldisk) for more information on contributing.
